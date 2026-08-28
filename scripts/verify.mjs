@@ -11,6 +11,12 @@ const demoLock = JSON.parse(await readFile(join(root, 'blueprints', 'advanced-bu
 const runtimeLock = JSON.parse(await readFile(join(root, 'blueprints', 'runtime.lock.json'), 'utf8'));
 const runtimeRoot = join(root, 'runtime', 'playground');
 
+const upstreamWorker = await readFile(join(runtimeRoot, 'sw.js'), 'utf8');
+const releaseWorker = await readFile(join(dist, 'sw.js'), 'utf8');
+if (releaseWorker === upstreamWorker) throw new Error('Built service worker has no first-party release cache policy');
+if (!/-we-wp-[a-f0-9]{16}",Gr="playground-cache"/.test(releaseWorker)) throw new Error('Built service worker has no release-specific cache key');
+if (!/weWpShellRequest\(e\.request\)/.test(releaseWorker)) throw new Error('Built service worker does not refresh first-party shell routes network-first');
+
 for (const file of manifest.files) {
   const bytes = await readFile(join(dist, file.path));
   const hash = createHash('sha256').update(bytes).digest('hex');

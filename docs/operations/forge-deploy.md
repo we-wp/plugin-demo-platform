@@ -22,6 +22,13 @@ The source checkout must resolve to the exact public `main` commit before
 `npm run check` builds `dist/`. Keep the public repository as the canonical
 source even when the Forge GitHub App cannot enumerate the organization.
 
+`npm run build` must run on every release. It generates a release-specific
+Playground cache identity and makes first-party shell routes network-first while
+leaving the locked runtime source untouched. Never deploy an older `dist/sw.js`
+with newer HTML or assets. Existing visitors from releases before this policy
+may need one reload after the browser installs the new worker; later releases
+refresh the shell from the network automatically.
+
 Selecting an existing Forge server does not itself approve a new site, deployment, Nginx change, certificate, or DNS record.
 
 Signing metadata must declare `algorithm: Ed25519`, a versioned public `keyId`, the lowercase SHA-256 fingerprint of the decoded 32-byte public key, the detached base64 signature path, and the canonical manifest hash. Verification must reject an unknown key ID, fingerprint mismatch, non-64-byte signature, changed manifest bytes, or artifact hash mismatch. The private key stays outside GitHub, Forge, application configuration, logs, and this repository.

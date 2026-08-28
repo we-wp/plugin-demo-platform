@@ -6,6 +6,8 @@ Use `demo.we-wp.com` as one static hub with plugin paths such as `/plugins/advan
 
 One origin gives every demo the same runtime cache, Content Security Policy, health checks, deployment, and rollback. A new subdomain is justified only when a plugin later needs server-side services or incompatible isolation.
 
+The checked-in Playground runtime remains byte-for-byte pinned. During `npm run build`, the deployment copy of `sw.js` receives a deterministic cache suffix derived from the first-party shell, registry, and Blueprint bundle. First-party HTML, catalogue data, screenshots, fonts, health files, and demo bundles use network-first delivery with the prior release as offline fallback. Playground runtime assets retain the upstream cache-first behavior. This prevents a root-scope Playground cache from keeping old product copy or application assets after a deployment.
+
 ## Runtime flow
 
 1. Static HTML loads the plugin registry and screenshot tour.

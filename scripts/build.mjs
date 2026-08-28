@@ -3,6 +3,7 @@ import { cp, mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promi
 import { spawnSync } from 'node:child_process';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { prepareServiceWorker, releaseFingerprint } from './service-worker-release.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const source = join(root, 'src');
@@ -45,6 +46,29 @@ async function filesWithin(directory) {
   return files;
 }
 
+const releaseInputs = [];
+for (const path of await filesWithin(source)) {
+  releaseInputs.push({
+    path: `src/${relative(source, path).replaceAll('\\', '/')}`,
+    bytes: await readFile(path)
+  });
+}
+releaseInputs.push({
+  path: 'registry/plugins.json',
+  bytes: await readFile(join(root, 'registry', 'plugins.json'))
+});
+for (const path of await filesWithin(blueprintSource)) {
+  releaseInputs.push({
+    path: `blueprints/advanced-bundles/${relative(blueprintSource, path).replaceAll('\\', '/')}`,
+    bytes: await readFile(path)
+  });
+}
+
+const workerFingerprint = releaseFingerprint(releaseInputs);
+const upstreamWorker = await readFile(join(runtimeSource, 'sw.js'), 'utf8');
+const releaseWorker = prepareServiceWorker(upstreamWorker, workerFingerprint);
+await writeFile(join(dist, 'sw.js'), releaseWorker);
+
 const files = (await filesWithin(dist)).sort();
 const manifest = { schemaVersion: 1, files: [] };
 for (const path of files) {
@@ -57,4 +81,4 @@ for (const path of files) {
 }
 
 await writeFile(join(dist, 'build-manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
-console.log(`Built ${manifest.files.length} files in ${dist}`);
+console.log(`Built ${manifest.files.length} files in ${dist} with shell cache ${workerFingerprint}`);

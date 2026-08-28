@@ -5,6 +5,7 @@ import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+import { prepareServiceWorker, releaseFingerprint } from '../scripts/service-worker-release.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const registry = JSON.parse(await readFile(join(root, 'registry', 'plugins.json'), 'utf8'));
@@ -79,6 +80,24 @@ test('pinned self-hosted runtime selection is imported and ready', async () => {
   const ready = JSON.parse(await readFile(join(root, 'src', 'health', 'ready.json'), 'utf8'));
   assert.equal(ready.interactiveRuntime, true);
   assert.equal(ready.httpStatus, 200);
+});
+
+test('release worker refreshes first-party shell without changing pinned runtime source', async () => {
+  const upstream = await readFile(join(root, 'runtime', 'playground', 'sw.js'), 'utf8');
+  const first = releaseFingerprint([{ path: 'src/index.html', bytes: Buffer.from('first') }]);
+  const second = releaseFingerprint([{ path: 'src/index.html', bytes: Buffer.from('second') }]);
+  assert.notEqual(first, second);
+
+  const prepared = prepareServiceWorker(upstream, first);
+  assert.notEqual(prepared, upstream);
+  assert.match(prepared, new RegExp(`-we-wp-${first}`));
+  assert.match(prepared, /Gr="playground-cache"/);
+  for (const route of ['/plugins/', '/data/', '/demo-assets/', '/health/', '/assets/app.js', '/assets/app.css']) {
+    assert.match(prepared, new RegExp(route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+  assert.match(prepared, /weWpShellRequest\(e\.request\)/);
+  assert.match(upstream, /match\(e,\{ignoreSearch:!0\}\)/);
+  assert.doesNotMatch(upstream, /weWpShellRequest|we-wp-/);
 });
 
 test('redistributed PHP, font, and synthetic fixtures have pinned provenance', async () => {
