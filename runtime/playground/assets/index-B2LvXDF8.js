@@ -1,0 +1,2 @@
+import{j as t}from"./wasm-feature-detect-DUYnTGBd.js";async function i(){return await t()?await import("./php_8_5-DNNfjrlC.js"):await import("./php_8_5-DtwaOFHI.js")}async function e(){return await t()?(await import("./intl-C_ix9gjB.js")).default:(await import("./intl-BtmQazQP.js")).default}export{e as getIntlExtensionPath,i as getPHPLoaderModule,t as jspi};
+//# sourceMappingURL=index-B2LvXDF8.js.map

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "upstreamRevision": "f29eca6c6f63f65e9176ce9072b2a34c9ed7d864",
+  "archive": {
+    "filename": "wasm-wordpress-net.tar.gz",
+    "size": 709583353,
+    "sha256": "93d4d5f1e8de89869b8b5f020a65d738b51b21f8812b29aab702c122cd2a469c"
+  },
+  "fileCount": 2063,
+  "size": 120629711,
+  "inventorySha256": "6520d1dbce6e32e586aef90bcb6f9b7b2278bd15c2978b39ff149dfc731221ae",
+  "policy": "Conservative support set with WordPress 6.9, PHP 8.3 JSPI and Asyncify binaries, matching client and remote, and all upstream JS, CSS, JPEG, and SVG support assets; no source maps, unrelated WordPress versions, or non-8.3 PHP WebAssembly binaries"
+}

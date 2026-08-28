@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Preview Advanced Bundles for WooCommerce with real product, editor, cart, and checkout screenshots.">
+  <title>Advanced Bundles demo | we-wp plugins</title>
+  <link rel="preload" href="/assets/fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="module" src="/assets/app.js?v=playground-runtime-1"></script>
+</head>
+<body data-page="advanced-bundles">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="wordmark" href="/" aria-label="we-wp plugins home">
+      <span>we-wp</span><span class="wordmark-rule" aria-hidden="true"></span><span class="wordmark-kind">plugins</span>
+    </a>
+    <a class="back-link" href="/">All plugin demos</a>
+  </header>
+
+  <main id="main">
+    <section class="product-hero wrap">
+      <div class="product-title">
+        <div class="product-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48"><path d="M10 14h28v8H10zM10 26h18v8H10z"/><path d="M32 26h6v8h-6z"/></svg>
+        </div>
+        <div>
+          <p class="status-label"><span></span>Interactive demo ready</p>
+          <h1>Build the bundle. Test the full order flow.</h1>
+          <p>Advanced Bundles creates fixed WooCommerce bundles while each product keeps its own price, stock, tax, shipping, and order line.</p>
+        </div>
+      </div>
+      <div class="button-row">
+        <a class="button button-primary" href="#tour">View the product flow</a>
+        <a class="button button-secondary" href="https://github.com/we-wp/advanced-bundles-for-woocommerce/releases/tag/v0.1.0" target="_blank" rel="noopener noreferrer">Download Free</a>
+      </div>
+    </section>
+
+    <section class="demo-area" id="tour" aria-labelledby="tour-title">
+      <div class="wrap">
+        <div class="demo-heading">
+          <div>
+            <h2 id="tour-title">See Advanced Bundles in WooCommerce.</h2>
+            <p>Switch between real screenshots from the tested Free plugin showcase.</p>
+          </div>
+          <button class="button button-primary" id="start-demo" data-demo-start type="button" aria-describedby="runtime-note">Start interactive demo</button>
+        </div>
+
+        <div class="demo-shell" data-demo-shell>
+          <div class="demo-toolbar">
+            <div class="demo-brand"><span class="demo-brand-mark" aria-hidden="true"></span><strong>Advanced Bundles</strong><small>Private demo</small></div>
+            <div class="demo-runtime-state"><span aria-hidden="true"></span><span data-toolbar-runtime-state>Screenshot tour</span></div>
+          </div>
+          <div class="demo-workspace" data-tour-workspace>
+            <div class="tour-tabs" role="tablist" aria-label="Plugin views">
+              <button type="button" role="tab" aria-selected="true" aria-controls="tour-panel" id="tab-storefront" data-tour-id="storefront">Product page</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="tour-panel" id="tab-editor" data-tour-id="editor" tabindex="-1">Bundle editor</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="tour-panel" id="tab-cart" data-tour-id="cart" tabindex="-1">Cart</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="tour-panel" id="tab-checkout" data-tour-id="checkout" tabindex="-1">Checkout</button>
+              <button class="tour-reset" type="button" data-tour-reset>Reset tour</button>
+            </div>
+            <figure class="tour-stage" id="tour-panel" role="tabpanel" aria-labelledby="tab-storefront" tabindex="0">
+              <div class="tour-browser">
+                <div class="browser-chrome" aria-hidden="true"><span></span><span></span><span></span><b>we-wp WooCommerce demo</b></div>
+                <img data-tour-image src="/assets/screenshots/storefront-bundle.png" alt="Advanced Bundles product page with component thumbnails and pricing table" width="1440" height="900" loading="lazy" decoding="async">
+              </div>
+              <figcaption><strong data-tour-label>Product page</strong><span data-tour-description>See bundle products, thumbnails, quantities, links, and total price.</span></figcaption>
+            </figure>
+          </div>
+          <div class="runtime-workspace" data-runtime-panel hidden>
+            <div class="runtime-controls" data-runtime-controls hidden aria-label="Demo navigation">
+              <button type="button" data-demo-route="/product/workshop-starter-bundle/" aria-pressed="true">Product page</button>
+              <button type="button" data-demo-route="editor" aria-pressed="false">Bundle editor</button>
+              <button type="button" data-demo-route="/cart/" aria-pressed="false">Cart</button>
+              <button type="button" data-demo-route="/checkout/" aria-pressed="false">Checkout</button>
+              <button class="runtime-reset" type="button" data-runtime-reset>Reset store</button>
+            </div>
+            <div class="runtime-stage">
+              <div class="runtime-loading" data-runtime-loading role="status">
+                <span class="runtime-spinner" aria-hidden="true"></span>
+                <strong>Building your private WooCommerce store</strong>
+                <p data-runtime-status>Loading WordPress, WooCommerce, and the verified Free package.</p>
+                <small>First start can take up to one minute. Everything runs in this browser.</small>
+              </div>
+              <div class="runtime-error" data-runtime-error role="alert" hidden>
+                <strong>Demo could not start.</strong>
+                <p data-runtime-status>Reload or try again.</p>
+                <button class="button button-primary" type="button" data-runtime-retry>Try again</button>
+              </div>
+              <div class="runtime-frame-host" data-runtime-frame-host hidden></div>
+            </div>
+          </div>
+        </div>
+        <p class="runtime-note" id="runtime-note"><strong>Fresh store, no shared account.</strong> WordPress, WooCommerce, and the exact Free package run inside your browser with synthetic data. Email, external requests, and live payments are blocked. Use Reset store for a clean instance.</p>
+      </div>
+    </section>
+
+    <section class="outcomes wrap" aria-labelledby="outcomes-title">
+      <div class="section-heading compact-heading">
+        <h2 id="outcomes-title">What you can check before installing.</h2>
+      </div>
+      <div class="outcome-list">
+        <article><span>Products</span><h3>Fixed products and variations</h3><p>Add exact WooCommerce products, including one specific variation, to a reusable bundle.</p></article>
+        <article><span>Pricing</span><h3>One clear total</h3><p>The Free plugin sums component prices instead of hiding how the total was calculated.</p></article>
+        <article><span>Stock</span><h3>Checks across the full cart</h3><p>WooCommerce validates the combined quantity when the same component appears in more than one bundle.</p></article>
+        <article><span>Orders</span><h3>Useful records after checkout</h3><p>Component names, quantities, prices, tax, and stock behavior remain available on the order.</p></article>
+      </div>
+    </section>
+
+    <section class="package-proof">
+      <div class="wrap proof-layout">
+        <div>
+          <h2>Exact Free package, pinned for review.</h2>
+          <p>The demo bundle contains only the reviewed Free ZIP. Pro source is not included.</p>
+          <div class="button-row" data-plugin-actions>
+            <a class="button button-primary" href="https://github.com/we-wp/advanced-bundles-for-woocommerce/releases/tag/v0.1.0" target="_blank" rel="noopener noreferrer">Download Free</a>
+            <a class="button button-secondary" href="https://github.com/we-wp/advanced-bundles-for-woocommerce" target="_blank" rel="noopener noreferrer">View source on GitHub</a>
+          </div>
+        </div>
+        <dl>
+          <div><dt>Version</dt><dd>0.1.0</dd></div>
+          <div><dt>ZIP size</dt><dd>55,745 bytes</dd></div>
+          <div><dt>ZIP entries</dt><dd>44</dd></div>
+          <div><dt>SHA-256</dt><dd><code>cfd0f4cb...38ee2d4</code></dd></div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-layout">
+      <a class="wordmark" href="/" aria-label="we-wp plugins home">
+        <span>we-wp</span><span class="wordmark-rule" aria-hidden="true"></span><span class="wordmark-kind">plugins</span>
+      </a>
+      <p>Private browser demo. No customer data.</p>
+    </div>
+  </footer>
+</body>
+</html>

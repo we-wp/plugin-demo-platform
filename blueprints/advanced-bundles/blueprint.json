@@ -1,0 +1,103 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "meta": {
+    "title": "we-wp Advanced Bundles demo",
+    "description": "Private browser demo with synthetic WooCommerce data and no external networking.",
+    "author": "UAB BusinessPress",
+    "categories": ["woocommerce", "bundles", "demo"]
+  },
+  "landingPage": "/product/workshop-starter-bundle/",
+  "preferredVersions": {
+    "php": "8.3",
+    "wp": "6.9"
+  },
+  "features": {
+    "networking": false
+  },
+  "login": true,
+  "steps": [
+    {
+      "step": "defineWpConfigConsts",
+      "consts": {
+        "DISALLOW_FILE_EDIT": true,
+        "DISALLOW_FILE_MODS": true,
+        "AUTOMATIC_UPDATER_DISABLED": true,
+        "DISABLE_WP_CRON": true,
+        "WP_HTTP_BLOCK_EXTERNAL": true,
+        "WP_ENVIRONMENT_TYPE": "local"
+      }
+    },
+    {
+      "step": "mkdir",
+      "path": "/wordpress/wp-content/mu-plugins"
+    },
+    {
+      "step": "writeFile",
+      "path": "/wordpress/wp-content/mu-plugins/we-wp-demo-guard.php",
+      "data": {
+        "resource": "bundled",
+        "path": "/mu-plugins/demo-guard.php"
+      }
+    },
+    {
+      "step": "installPlugin",
+      "pluginData": {
+        "resource": "bundled",
+        "path": "/plugins/woocommerce-11.0.1.zip"
+      },
+      "options": {
+        "activate": true
+      }
+    },
+    {
+      "step": "installPlugin",
+      "pluginData": {
+        "resource": "bundled",
+        "path": "/plugins/aim-advanced-bundles-0.1.0.zip"
+      },
+      "options": {
+        "activate": true
+      }
+    },
+    {
+      "step": "mkdir",
+      "path": "/tmp/we-wp-demo/images"
+    },
+    {
+      "step": "writeFile",
+      "path": "/tmp/we-wp-demo/seed.php",
+      "data": {
+        "resource": "bundled",
+        "path": "/fixtures/seed.php"
+      }
+    },
+    {
+      "step": "writeFile",
+      "path": "/tmp/we-wp-demo/images/guides.png",
+      "data": {
+        "resource": "bundled",
+        "path": "/fixtures/images/guides.png"
+      }
+    },
+    {
+      "step": "writeFile",
+      "path": "/tmp/we-wp-demo/images/case.png",
+      "data": {
+        "resource": "bundled",
+        "path": "/fixtures/images/case.png"
+      }
+    },
+    {
+      "step": "writeFile",
+      "path": "/tmp/we-wp-demo/images/bundle.png",
+      "data": {
+        "resource": "bundled",
+        "path": "/fixtures/images/bundle.png"
+      }
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php require_once '/wordpress/wp-load.php'; require '/tmp/we-wp-demo/seed.php';"
+    }
+  ]
+}

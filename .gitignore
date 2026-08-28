@@ -1,0 +1,12 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+/.runtime-import/
+/.build/
+/coverage/
+/dist/
+/node_modules/
+/screenshots/advanced-bundles-*.png
+/screenshots/hub-*.png
+*.log

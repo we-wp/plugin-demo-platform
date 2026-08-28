@@ -1,0 +1,270 @@
+{
+    "format_version": 3,
+    "package": "aim-advanced-bundles",
+    "version": "0.1.0",
+    "plugin": {
+        "entry_file": "aim-advanced-bundles.php",
+        "name": "Advanced Bundles for WooCommerce",
+        "author": "UAB BusinessPress",
+        "requires_wordpress": "6.8",
+        "requires_php": "8.2",
+        "requires_woocommerce": "9.9",
+        "plugin_uri": null,
+        "author_uri": null,
+        "update_uri": null,
+        "tested_wordpress": "7.1",
+        "requires_plugins": [
+            "woocommerce"
+        ],
+        "dependency_constraints": {
+            "woocommerce": ">=9.9"
+        },
+        "changelog": {
+            "version": "0.1.0",
+            "items": [
+                "Initial Free package with fixed products and variations, summed pricing, fixed quantities, aggregate stock checks, grouped classic and Blocks carts, native component order lines, write-once calculated snapshots, HPOS support, and a responsive product table."
+            ]
+        }
+    },
+    "source_date_epoch": 315532800,
+    "source": {
+        "revision": "410bc9b9dbf4a456cef81c9779268d2887f85776",
+        "state": "clean"
+    },
+    "build_environment": {
+        "process_timezone": "UTC",
+        "php_timezone": "UTC",
+        "os": "Darwin",
+        "os_family": "Darwin",
+        "architecture": "arm64",
+        "php": "8.3.32",
+        "libzip": "1.11.4"
+    },
+    "files": [
+        {
+            "path": "aim-advanced-bundles/LICENSE.txt",
+            "sha256": "a48ddbb53aa11526334a007e40ad9a39b29b08b2412719a3ac14c0cb18ea40f7",
+            "size": 18211
+        },
+        {
+            "path": "aim-advanced-bundles/aim-advanced-bundles.php",
+            "sha256": "a77f126cd78ecd70865d9d0d54ee7744d8a3eb7542f7f012ef4193cf85ddd285",
+            "size": 1111
+        },
+        {
+            "path": "aim-advanced-bundles/assets/admin-components.css",
+            "sha256": "099856c8a38f559fc35304371b8967defc92cacc47f220391929a2023ff7e1f6",
+            "size": 2471
+        },
+        {
+            "path": "aim-advanced-bundles/assets/admin-components.js",
+            "sha256": "9c8fba5da99b1b60238d7178edd302254b89d8067e4e875b4c1f53021589e02a",
+            "size": 725
+        },
+        {
+            "path": "aim-advanced-bundles/assets/blocks-cart.js",
+            "sha256": "05048c8ffd8c3a653c7b9e00b0b71b1435ac90c8adab17fbfe9ad72981e1dddc",
+            "size": 1469
+        },
+        {
+            "path": "aim-advanced-bundles/assets/storefront-bundle.css",
+            "sha256": "4ebcdba48a2d32752e43ab2c6ce143242232058c1c8f7cab984ac7ef01163d95",
+            "size": 3239
+        },
+        {
+            "path": "aim-advanced-bundles/autoload.php",
+            "sha256": "0970cb517433488095e37bd3a487d6454f7012a74b78aa8e3e642b6f7ec68089",
+            "size": 666
+        },
+        {
+            "path": "aim-advanced-bundles/composer.json",
+            "sha256": "db2ace29d8411026e7bd035a59ce87a605608c5041440af9ef74d2e7438462c0",
+            "size": 328
+        },
+        {
+            "path": "aim-advanced-bundles/readme.txt",
+            "sha256": "622020ad42d75c65b224cb58e3cb334c0f28c9d21a65d24d67cc7cc2b0295ce5",
+            "size": 2813
+        },
+        {
+            "path": "aim-advanced-bundles/src/Contracts/BundleComponent.php",
+            "sha256": "cebbe74b5726fb27a5f962e12e053d82860878f8b6ff22624b55771dde80b4d5",
+            "size": 2788
+        },
+        {
+            "path": "aim-advanced-bundles/src/Contracts/BundleDefinition.php",
+            "sha256": "38c4659192004b18740ef732a53552c7c64420a60eac4e07ac9e7c2071433f6b",
+            "size": 6135
+        },
+        {
+            "path": "aim-advanced-bundles/src/Contracts/PricingStrategyInterface.php",
+            "sha256": "7bd8d021db9c6c3cab0eb1c4914cd8f19baa4d97dec3da834d37e3ffa1649147",
+            "size": 588
+        },
+        {
+            "path": "aim-advanced-bundles/src/Contracts/SelectionSnapshot.php",
+            "sha256": "beb7940f8838c16bb45cc4dd14b2f7eb62771d27f88167607eb29767a54958a3",
+            "size": 6827
+        },
+        {
+            "path": "aim-advanced-bundles/src/Domain/CanonicalIdentifier.php",
+            "sha256": "cf604767e397005dc65ec59aea6327c4cf55250c543c78dc1ae7927974ab7aff",
+            "size": 707
+        },
+        {
+            "path": "aim-advanced-bundles/src/Domain/IntegerMath.php",
+            "sha256": "f7400e7754e4ac432a1457ea44aa43abdaa77257f0a1341cd3ae38d8e68b85c6",
+            "size": 798
+        },
+        {
+            "path": "aim-advanced-bundles/src/Domain/Money/DecimalMinorConverter.php",
+            "sha256": "2fdfcc556e29e51103bff690928bcd6dcef9f4e65a9967f7077b652cd5e65f2b",
+            "size": 1175
+        },
+        {
+            "path": "aim-advanced-bundles/src/Domain/Pricing/PricingResult.php",
+            "sha256": "1079718a88dbf6eb29b0bcd1a0477dec73c264ba3bb83907fcd3cbd1c064cfcf",
+            "size": 670
+        },
+        {
+            "path": "aim-advanced-bundles/src/Domain/Pricing/ResolvedComponent.php",
+            "sha256": "5ec43038296b0ced2223d94d276b409e9c41021b41c171fa9bc7e3dea21c2860",
+            "size": 1104
+        },
+        {
+            "path": "aim-advanced-bundles/src/Domain/Pricing/SumPricingStrategy.php",
+            "sha256": "20f6e4304aec4d9caa01f2f7e0f8058ebe768e5f6dab11572a9a340f158189d7",
+            "size": 1339
+        },
+        {
+            "path": "aim-advanced-bundles/src/Domain/SelectedComponent.php",
+            "sha256": "8860df4e9f090a19feaf8cfd83b89d765a5e932a4d0b252bfa46bf43488b63a9",
+            "size": 4222
+        },
+        {
+            "path": "aim-advanced-bundles/src/Domain/Stock/StockDemandValidator.php",
+            "sha256": "c7b87377f3dad404f6af5e94d560196db3b91fe1d3d55d46d5775ea85435695c",
+            "size": 1846
+        },
+        {
+            "path": "aim-advanced-bundles/src/Domain/Stock/StockState.php",
+            "sha256": "e5b55306933cc5d4c4ca911c80bc33c6a9dc3116486886ddaa57e7d1fb98f663",
+            "size": 907
+        },
+        {
+            "path": "aim-advanced-bundles/src/Domain/Validation/BundleGraphValidator.php",
+            "sha256": "1a4264ba217ed98d22d537dffc753b43bec58a1a323a29f8393ef0ab510e2fa6",
+            "size": 2272
+        },
+        {
+            "path": "aim-advanced-bundles/src/Domain/Validation/ResolvedSelectionValidator.php",
+            "sha256": "8b788e36c60bf8d9f78ea35c19ed07a8503ed245723ada032ffe550c5c99d72b",
+            "size": 1919
+        },
+        {
+            "path": "aim-advanced-bundles/src/Extension/ExtensionRegistry.php",
+            "sha256": "c6a7111e72754aab095995e22bc90f0ea497c64017551a58e1dc832ee62c6abb",
+            "size": 2036
+        },
+        {
+            "path": "aim-advanced-bundles/src/Plugin.php",
+            "sha256": "95f28294e25db10b27809c89d4f39d5614a3baf5da07da9c5c60b04aa244ba07",
+            "size": 3364
+        },
+        {
+            "path": "aim-advanced-bundles/src/PluginEnvironment.php",
+            "sha256": "00f37ad35d0907d4f1083143881ac8dac29a3c828eeaa00fa72239e35b75cb00",
+            "size": 1394
+        },
+        {
+            "path": "aim-advanced-bundles/src/WooCommerce/Admin/BundleProductEditor.php",
+            "sha256": "7721193c6e132b2d83d0cc48c26c0f6ecfb14745700b48d6757c02bf1307a5a9",
+            "size": 12074
+        },
+        {
+            "path": "aim-advanced-bundles/src/WooCommerce/AimBundleProduct.php",
+            "sha256": "1cede471ac4e08bd0aab841a6e073789ff423c54d8fc6098ce374a1ac4951c3a",
+            "size": 2006
+        },
+        {
+            "path": "aim-advanced-bundles/src/WooCommerce/Blocks/BundleBlocksIntegration.php",
+            "sha256": "9c06a3298147aa0c23e9079e89909eca90f6838e9ae8ff14374cdc8948497d8a",
+            "size": 4116
+        },
+        {
+            "path": "aim-advanced-bundles/src/WooCommerce/BundleComponentResolver.php",
+            "sha256": "af7c3a3cdd2c032984b9f50a378e7547085c8652cc3a52c79c23309dcc48bb1e",
+            "size": 1803
+        },
+        {
+            "path": "aim-advanced-bundles/src/WooCommerce/Cart/BundleCartController.php",
+            "sha256": "0acc6d1ba8a78eea2e5ebf6c9bef228e59e7241bb9fe1269a02f6477b158039e",
+            "size": 23690
+        },
+        {
+            "path": "aim-advanced-bundles/src/WooCommerce/Cart/WooStockValidator.php",
+            "sha256": "920108242b841c57a659e7fea009d9fa60d15ab6b143b84759edbce7c7b73c5d",
+            "size": 4865
+        },
+        {
+            "path": "aim-advanced-bundles/src/WooCommerce/CompatibilityDeclarations.php",
+            "sha256": "19c3f54cc22ddebbb2ca123a733a950989d2b0696e9e8b759fbbf2565e9d1782",
+            "size": 605
+        },
+        {
+            "path": "aim-advanced-bundles/src/WooCommerce/Metadata.php",
+            "sha256": "05333cbc56cef355feb97f258bae6f08347c49d855f2f4cbb98f1540d256380f",
+            "size": 1031
+        },
+        {
+            "path": "aim-advanced-bundles/src/WooCommerce/Multisite/NetworkSiteBootstrapper.php",
+            "sha256": "1f6315addc915f8c21c528ba32c98a0e1b9e603577d5f5bd248c4031b52dc8e9",
+            "size": 3130
+        },
+        {
+            "path": "aim-advanced-bundles/src/WooCommerce/Order/CartSnapshotFactory.php",
+            "sha256": "e6b369be1d296e3cea9f6b994532eb09d5021ddbc4bca0c0f4bd0e200309d15c",
+            "size": 6545
+        },
+        {
+            "path": "aim-advanced-bundles/src/WooCommerce/Order/OrderMetadataController.php",
+            "sha256": "56543dd5a1e18b619c53f05bddc4568a4c8d0f02d554f4c6d535b01ea878e708",
+            "size": 3388
+        },
+        {
+            "path": "aim-advanced-bundles/src/WooCommerce/Persistence/BundleDefinitionRepository.php",
+            "sha256": "54d728054314a03813da50a7592d0a1b049e6884873387c7c9991b76be43ddf7",
+            "size": 2377
+        },
+        {
+            "path": "aim-advanced-bundles/src/WooCommerce/Pricing/BundlePriceCalculator.php",
+            "sha256": "f76192d09ada7b437253e25688d3b0e4eace41123f389c38549c4e1320662464",
+            "size": 2359
+        },
+        {
+            "path": "aim-advanced-bundles/src/WooCommerce/ProductTypeRegistrar.php",
+            "sha256": "3f02a49f1ed0f7f0693c317b444bc74ab49c077f7da8bbfe59f75f0e8a0a7c49",
+            "size": 1047
+        },
+        {
+            "path": "aim-advanced-bundles/src/WooCommerce/ResolvedBundleComponent.php",
+            "sha256": "46011ef08a4592e1a513b1b464be61bdccbab344d9ecd42ad75e0df468e2c1ce",
+            "size": 451
+        },
+        {
+            "path": "aim-advanced-bundles/src/WooCommerce/Storefront/BundleAddToCartForm.php",
+            "sha256": "2903a9b77322f77fc91cc84473018c1844868353c79e8f270f5a32a5df7a1795",
+            "size": 5775
+        },
+        {
+            "path": "aim-advanced-bundles/uninstall.php",
+            "sha256": "9cd8f4ec28bbf0a7f0e1848c125e9267db89df26680bd09805035f97b7fc4c88",
+            "size": 303
+        }
+    ],
+    "zip": {
+        "file": "aim-advanced-bundles-0.1.0.zip",
+        "sha256": "cfd0f4cba21842d7216f1565bfe4ae874de29abf9a081d1620229e37b38ee2d4"
+    },
+    "signature": null
+}

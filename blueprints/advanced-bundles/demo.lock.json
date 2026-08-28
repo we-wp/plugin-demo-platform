@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "demo": "advanced-bundles",
+  "wordpress": "6.9",
+  "php": "8.3",
+  "woocommerce": {
+    "version": "11.0.1",
+    "filename": "woocommerce-11.0.1.zip",
+    "sha256": "da189b6616c610d15a2106f93151dab81b78f83e075bcefce221ac0d00b4fa21",
+    "size": 20218895,
+    "entries": 6847
+  },
+  "plugin": {
+    "edition": "free",
+    "version": "0.1.0",
+    "filename": "aim-advanced-bundles-0.1.0.zip",
+    "sha256": "cfd0f4cba21842d7216f1565bfe4ae874de29abf9a081d1620229e37b38ee2d4",
+    "size": 55745,
+    "entries": 44,
+    "sourceRevision": "410bc9b9dbf4a456cef81c9779268d2887f85776",
+    "manifestSha256": "3dd6b82b847f20f0a3fa4d0dae1c1087628ffdc6adf50c122f1f99fec34e00ff",
+    "signature": null
+  },
+  "networking": false,
+  "persistence": "temporary-browser-instance",
+  "containsCustomerData": false,
+  "containsProSource": false
+}

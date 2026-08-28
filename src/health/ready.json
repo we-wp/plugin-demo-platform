@@ -1,0 +1,8 @@
+{
+  "status": "ready",
+  "shell": true,
+  "registry": true,
+  "blueprintBundle": true,
+  "interactiveRuntime": true,
+  "httpStatus": 200
+}

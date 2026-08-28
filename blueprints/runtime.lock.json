@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 2,
+  "engine": "wordpress-playground",
+  "state": "imported-and-verified",
+  "source": {
+    "repository": "WordPress/wordpress-playground",
+    "workflow": "deploy-website.yml",
+    "runId": 33173419793,
+    "runUrl": "https://github.com/WordPress/wordpress-playground/actions/runs/33173419793",
+    "headSha": "f29eca6c6f63f65e9176ce9072b2a34c9ed7d864",
+    "artifactId": 9686769924,
+    "artifactName": "playground-website",
+    "reportedCompressedSize": 708769597,
+    "githubArtifactDigestSha256": "a72b1dc733f7120b5c4ec084ac3122e4ac095ddd5b525dfc93e678629f33a89d",
+    "expiredWhenImported": false,
+    "importedAt": "2026-08-29T00:34:00+03:00"
+  },
+  "payload": {
+    "filename": "wasm-wordpress-net.tar.gz",
+    "size": 709583353,
+    "sha256": "93d4d5f1e8de89869b8b5f020a65d738b51b21f8812b29aab702c122cd2a469c",
+    "entries": 27769,
+    "inventoryFormat": "sorted type, tab, size, tab, path, newline",
+    "inventorySha256": "3995f1870fdd6e831b4a92126d95244d29eeed26736cc6cf854bfb319d1d74c4"
+  },
+  "selection": {
+    "path": "runtime/playground",
+    "wordpress": "6.9",
+    "php": "8.3",
+    "variants": ["jspi", "asyncify"],
+    "fileCount": 2063,
+    "size": 120629711,
+    "inventoryFormat": "sorted path, tab, size, tab, sha256, newline; selection.json excluded",
+    "inventorySha256": "6520d1dbce6e32e586aef90bcb6f9b7b2278bd15c2978b39ff149dfc731221ae",
+    "selectionPolicy": "Conservative self-hosted support set: exact root, client, WordPress 6.9, PHP 8.3 binary, and all upstream JS, CSS, JPEG, and SVG support assets retained because a smaller dependency closure has not been proven.",
+    "conservativeSupportAssets": {
+      "offlineManifestUnlistedFiles": 89,
+      "offlineManifestUnlistedSize": 7296019,
+      "nonPhp83WrapperFiles": 14,
+      "nonPhp83WrapperSize": 1905409,
+      "note": "The non-8.3 files are JavaScript wrappers only; no non-8.3 PHP WebAssembly binary is retained."
+    },
+    "excluded": ["source maps", "unrelated WordPress versions", "non-8.3 PHP WebAssembly binaries", "large extension binaries not required by the locked demo"]
+  },
+  "verification": {
+    "sameOriginRemote": true,
+    "browserBootVerified": true,
+    "woocommerceVerified": true,
+    "freePluginVerified": true,
+    "syntheticFixturesVerified": true,
+    "outboundHttpBlockVerified": true,
+    "mailBlockVerified": true,
+    "uploadLimitVerified": true,
+    "resetVerified": true,
+    "failureStateVerified": true,
+    "desktopVerified": true,
+    "mobileVerified": true
+  }
+}

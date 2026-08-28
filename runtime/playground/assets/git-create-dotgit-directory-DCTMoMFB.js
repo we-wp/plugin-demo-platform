@@ -1,0 +1,13 @@
+import{g as m,h as u}from"./isomorphic-git-internals-BhevHL76.js";import"./opfs-site-storage-DRy7robp.js";const p=u.deflate,$=/^[0-9a-f]{40}$/i;async function b(c){const r={},i=new TextEncoder;return await Promise.all(c.map(async({oid:s,type:e,body:o})=>{if(!s||o.length===0)return;const a=i.encode(`${e} ${o.length}\0`),t=new Uint8Array(a.length+o.length);t.set(a,0),t.set(o,a.length);const n=await p(t),f=s.slice(0,2),g=s.slice(2);r[`.git/objects/${f}/${g}`]=n})),r}function k(c,r,i){const s=c?.trim()??"";let e=null;switch(r){case"branch":s&&(e=`refs/heads/${s}`);break;case"refname":e=s||null;break;case"tag":s.startsWith("refs/")?e=s:s&&(e=`refs/tags/${s}`);break;case"commit":e=null;break;default:s.startsWith("refs/")?e=s:$.test(s)?e=null:s&&s!=="HEAD"&&(e=`refs/heads/${s}`);break}const o=e?`ref: ${e}
+`:`${i}
+`,a=e&&e.startsWith("refs/heads/")?e:void 0,t=a?.slice(11),f=(e&&e.startsWith("refs/tags/")?e:void 0)?.slice(10);return{headContent:o,branchName:t,branchRef:a,tagName:f}}function w(c,{branchName:r,partialCloneFilter:i}){const e=["[core]",`	repositoryformatversion = ${i?1:0}`,"	filemode = true","	bare = false","	logallrefupdates = true","	ignorecase = true","	precomposeunicode = true",'[remote "origin"]',`	url = ${c}`,"	fetch = +refs/heads/*:refs/remotes/origin/*","	fetch = +refs/tags/*:refs/tags/*"];return i&&(e.push("	promisor = true"),e.push(`	partialclonefilter = ${i}`),e.push("[extensions]"),e.push("	partialclone = origin")),r&&e.push(`[branch "${r}"]`,"	remote = origin",`	merge = refs/heads/${r}`),e.join(`
+`)+`
+`}async function R({repoUrl:c,commitHash:r,ref:i,refType:s,objects:e,fileOids:o,pathPrefix:a}){const t={},n=k(i,s,r);t[".git/HEAD"]=n.headContent,t[".git/config"]=w(c,{branchName:n.branchName}),t[".git/description"]=`WordPress Playground clone
+`,t[".git/shallow"]=`${r}
+`,t[".git/refs/heads/.gitkeep"]="",t[".git/refs/tags/.gitkeep"]="",t[".git/refs/remotes/.gitkeep"]="",n.branchRef&&n.branchName&&(t[".git/logs/HEAD"]=`ref: ${n.branchRef}
+`,t[`.git/${n.branchRef}`]=`${r}
+`,t[`.git/refs/remotes/origin/${n.branchName}`]=`${r}
+`,t[".git/refs/remotes/origin/HEAD"]=`ref: refs/remotes/origin/${n.branchName}
+`),n.tagName&&(t[`.git/refs/tags/${n.tagName}`]=`${r}
+`),Object.assign(t,await b(e));const f=new m;for(const[l,h]of Object.entries(o)){const d=l.substring(a.length).replace(/^\/+/,"");f.insert({filepath:d,oid:h,stats:{ctimeSeconds:0,ctimeNanoseconds:0,mtimeSeconds:0,mtimeNanoseconds:0,dev:0,ino:0,mode:33188,uid:0,gid:0,size:0}})}const g=await f.toObject();return t[".git/index"]=Uint8Array.from(g),t}export{R as createDotGitDirectory};
+//# sourceMappingURL=git-create-dotgit-directory-DCTMoMFB.js.map

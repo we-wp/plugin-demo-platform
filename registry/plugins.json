@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "brand": "we-wp | plugins",
+  "hubPath": "/",
+  "plugins": [
+    {
+      "slug": "advanced-bundles",
+      "packageSlug": "aim-advanced-bundles",
+      "name": "Advanced Bundles for WooCommerce",
+      "shortName": "Advanced Bundles",
+      "status": "interactive-demo-ready",
+      "summary": "Create fixed WooCommerce bundles with clear component pricing, stock, and order records.",
+      "demoPath": "/plugins/advanced-bundles/",
+      "productPath": null,
+      "sourceUrl": "https://github.com/we-wp/advanced-bundles-for-woocommerce",
+      "releaseUrl": "https://github.com/we-wp/advanced-bundles-for-woocommerce/releases/tag/v0.1.0",
+      "runtime": {
+        "engine": "wordpress-playground-self-hosted",
+        "ready": true,
+        "reason": null,
+        "blueprintBundlePath": "/demo-assets/advanced-bundles-demo.zip",
+        "resetModel": "new-temporary-browser-instance"
+      },
+      "screenshots": [
+        {
+          "id": "storefront",
+          "label": "Product page",
+          "description": "See bundle products, thumbnails, quantities, links, and total price.",
+          "path": "/assets/screenshots/storefront-bundle.png"
+        },
+        {
+          "id": "editor",
+          "label": "Bundle editor",
+          "description": "Build a fixed bundle from products and exact variations in WooCommerce.",
+          "path": "/assets/screenshots/product-editor.png"
+        },
+        {
+          "id": "cart",
+          "label": "Cart",
+          "description": "Keep one clear bundle group while component stock and prices stay native.",
+          "path": "/assets/screenshots/cart-bundle.png"
+        },
+        {
+          "id": "checkout",
+          "label": "Checkout",
+          "description": "Carry the bundle structure through WooCommerce checkout and order creation.",
+          "path": "/assets/screenshots/checkout-summary.png"
+        }
+      ],
+      "artifact": {
+        "edition": "free",
+        "version": "0.1.0",
+        "filename": "aim-advanced-bundles-0.1.0.zip",
+        "sha256": "cfd0f4cba21842d7216f1565bfe4ae874de29abf9a081d1620229e37b38ee2d4",
+        "size": 55745,
+        "entries": 44
+      }
+    },
+    {
+      "slug": "advanced-invoices",
+      "packageSlug": null,
+      "name": "Advanced Woo Invoices",
+      "shortName": "Advanced Invoices",
+      "status": "coming-soon",
+      "summary": "Flexible WooCommerce invoices and documents are in development.",
+      "demoPath": null,
+      "productPath": null,
+      "sourceUrl": null,
+      "releaseUrl": null,
+      "runtime": null,
+      "screenshots": [],
+      "artifact": null
+    }
+  ]
+}
