@@ -49,9 +49,11 @@ test('Blueprint is isolated and uses only bundled packages', () => {
 
 test('demo guard blocks delivery and destructive capabilities', async () => {
   const guard = await readFile(join(root, 'blueprints', 'advanced-bundles', 'mu-plugins', 'demo-guard.php'), 'utf8');
-  for (const required of ['pre_http_request', 'pre_wp_mail', 'woocommerce_available_payment_gateways', 'install_plugins', 'upload_size_limit', 'Content-Security-Policy']) {
+  for (const required of ['pre_http_request', 'pre_wp_mail', 'woocommerce_available_payment_gateways', 'install_plugins', 'upload_size_limit', 'Content-Security-Policy', 'woocommerce_feature_order_attribution_enabled', 'pre_option_show_avatars', 'print_emoji_detection_script']) {
     assert.match(guard, new RegExp(required));
   }
+  const seed = await readFile(join(root, 'blueprints', 'advanced-bundles', 'fixtures', 'seed.php'), 'utf8');
+  assert.match(seed, /woocommerce_feature_order_attribution_enabled', 'no'/);
 });
 
 test('pinned self-hosted runtime selection is imported and ready', async () => {

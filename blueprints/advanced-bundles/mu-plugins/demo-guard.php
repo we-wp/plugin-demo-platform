@@ -24,9 +24,22 @@ add_filter( 'wp_is_application_passwords_available', '__return_false' );
 add_filter( 'send_password_change_email', '__return_false' );
 add_filter( 'send_email_change_email', '__return_false' );
 add_filter( 'pre_option_users_can_register', '__return_zero' );
+add_filter( 'pre_option_show_avatars', '__return_zero' );
 add_filter( 'pre_option_woocommerce_allow_tracking', static fn (): string => 'no' );
+add_filter( 'pre_option_woocommerce_feature_order_attribution_enabled', static fn (): string => 'no' );
 add_filter( 'pre_option_woocommerce_show_marketplace_suggestions', static fn (): string => 'no' );
 add_filter( 'upload_size_limit', static fn (): int => 2 * MB_IN_BYTES );
+add_filter( 'emoji_svg_url', '__return_false' );
+
+add_action(
+	'init',
+	static function (): void {
+		remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+		remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+		remove_action( 'wp_print_styles', 'print_emoji_styles' );
+		remove_action( 'admin_print_styles', 'print_emoji_styles' );
+	}
+);
 
 /**
  * Keep both storefront and wp-admin pages embeddable by the isolated Playground
@@ -116,7 +129,7 @@ add_action(
 	static function (): void {
 		?>
 		<div class="notice notice-info">
-			<p><strong>Private browser demo.</strong> Use synthetic data only. Email, external requests, file changes, and real payment gateways are disabled. Reload the demo to reset.</p>
+			<p><strong>Temporary browser demo.</strong> Use synthetic data only. Email, external requests, file changes, and real payment gateways are disabled. Reload the demo to reset.</p>
 		</div>
 		<?php
 	}

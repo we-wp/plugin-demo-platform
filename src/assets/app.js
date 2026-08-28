@@ -112,7 +112,7 @@ function setRuntimeState(state, message) {
 
   shell.dataset.runtimeState = state;
   start.disabled = state === 'loading' || state === 'ready';
-  start.textContent = state === 'loading' ? 'Starting private store' : state === 'ready' ? 'Demo running' : 'Start interactive demo';
+  start.textContent = state === 'loading' ? 'Starting temporary store' : state === 'ready' ? 'Demo running' : 'Start interactive demo';
   tour.hidden = state !== 'tour';
   runtime.hidden = state === 'tour';
   loading.hidden = state !== 'loading';
@@ -120,7 +120,7 @@ function setRuntimeState(state, message) {
   controls.hidden = state !== 'ready';
   frameHost.hidden = state !== 'ready';
   document.querySelectorAll('[data-runtime-status]').forEach((status) => { status.textContent = message; });
-  toolbarState.textContent = state === 'ready' ? 'Interactive store ready' : state === 'loading' ? 'Preparing private store' : state === 'error' ? 'Demo could not start' : 'Screenshot tour';
+  toolbarState.textContent = state === 'ready' ? 'Isolated store ready' : state === 'loading' ? 'Preparing temporary store' : state === 'error' ? 'Demo could not start' : 'Screenshot tour';
 }
 
 function createRuntimeFrame() {
@@ -208,7 +208,7 @@ async function startInteractiveDemo({ expectCleanReset = false } = {}) {
     if (generation !== demoState.generation) return;
     demoState.client = client;
     demoState.proof = proof;
-    setRuntimeState('ready', `Private store ready. WordPress ${proof.wordpress}, WooCommerce ${proof.woocommerce}, Advanced Bundles Free 0.1.0.`);
+    setRuntimeState('ready', `Temporary store ready. WordPress ${proof.wordpress}, WooCommerce ${proof.woocommerce}, Advanced Bundles Free 0.1.0.`);
     await client.goTo('/product/workshop-starter-bundle/');
     document.querySelectorAll('[data-demo-route]').forEach((button) => {
       button.setAttribute('aria-pressed', String(button.dataset.demoRoute === '/product/workshop-starter-bundle/'));

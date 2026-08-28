@@ -81,12 +81,13 @@ if ( get_page_by_path( 'workshop-starter-bundle', OBJECT, 'product' ) instanceof
 }
 
 update_option( 'blogname', 'we-wp Advanced Bundles demo' );
-update_option( 'blogdescription', 'Synthetic WooCommerce store for a private browser demo.' );
+update_option( 'blogdescription', 'Synthetic WooCommerce store for an isolated browser demo.' );
 update_option( 'woocommerce_currency', 'EUR' );
 update_option( 'woocommerce_default_country', 'LT' );
 update_option( 'woocommerce_enable_guest_checkout', 'yes' );
 update_option( 'woocommerce_enable_checkout_login_reminder', 'no' );
 update_option( 'woocommerce_allow_tracking', 'no' );
+update_option( 'woocommerce_feature_order_attribution_enabled', 'no' );
 update_option( 'woocommerce_coming_soon', 'no' );
 update_option( 'woocommerce_store_pages_only', 'no' );
 update_option( 'woocommerce_feature_site_visibility_badge_enabled', 'no' );

@@ -2,7 +2,7 @@
   "$schema": "https://playground.wordpress.net/blueprint-schema.json",
   "meta": {
     "title": "we-wp Advanced Bundles demo",
-    "description": "Private browser demo with synthetic WooCommerce data and no external networking.",
+    "description": "Temporary browser demo with synthetic WooCommerce data and no external networking.",
     "author": "UAB BusinessPress",
     "categories": ["woocommerce", "bundles", "demo"]
   },
