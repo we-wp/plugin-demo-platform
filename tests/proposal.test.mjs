@@ -57,6 +57,15 @@ test('demo guard blocks delivery and destructive capabilities', async () => {
   assert.match(seed, /woocommerce_feature_order_attribution_enabled', 'no'/);
 });
 
+test('demo guard removes Playground cross-document transitions before rendering', async () => {
+  const guard = await readFile(join(root, 'blueprints', 'advanced-bundles', 'mu-plugins', 'demo-guard.php'), 'utf8');
+  assert.match(guard, /add_action\(\s*'muplugins_loaded'/);
+  for (const hook of ['wp_head', 'admin_print_styles', 'login_head']) {
+    assert.match(guard, new RegExp(`remove_action\\( '${hook}', 'playground_enable_view_transitions', 0 \\)`));
+  }
+  assert.doesNotMatch(guard, /unhandledrejection|console\.|AbortError|Transition was skipped/);
+});
+
 test('pinned self-hosted runtime selection is imported and ready', async () => {
   assert.equal(runtimeLock.state, 'imported-and-verified');
   assert.equal(runtimeLock.source.headSha, 'f29eca6c6f63f65e9176ce9072b2a34c9ed7d864');

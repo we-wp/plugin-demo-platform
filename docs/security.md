@@ -4,6 +4,7 @@
 - Blueprint networking is `false` and WordPress sets `WP_HTTP_BLOCK_EXTERNAL`.
 - The MU plugin stops HTTP requests and `wp_mail` before delivery.
 - Order attribution, remote avatars, and remote emoji images are disabled because they add no value to the synthetic demo and would create outbound requests or console warnings.
+- Playground's cosmetic cross-document transitions are disabled because Chrome rejects the storefront-to-admin transition that the demo navigation intentionally performs.
 - The outer server allows only same-origin scripts, workers, frames, and connections plus the local data and blob schemes required by Playground. Inline scripts remain blocked; inline styles are allowed because the official remote shell sizes its nested WordPress frame with an inline stylesheet.
 - Cross-origin opener and embedder isolation is required on the static server. WordPress storefront and admin responses also emit the matching embedder and resource policy headers.
 - Production static locations use the complete checked-in MIME map. JavaScript must be served as `application/javascript` while `X-Content-Type-Options: nosniff` remains enabled.

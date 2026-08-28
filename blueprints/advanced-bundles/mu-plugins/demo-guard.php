@@ -31,6 +31,19 @@ add_filter( 'pre_option_woocommerce_show_marketplace_suggestions', static fn ():
 add_filter( 'upload_size_limit', static fn (): int => 2 * MB_IN_BYTES );
 add_filter( 'emoji_svg_url', '__return_false' );
 
+// Playground enables cross-document transitions on the storefront but removes
+// them from wp-admin in Chrome. Navigating between those documents rejects the
+// browser transition promise, so keep this disposable demo transition-free.
+add_action(
+	'muplugins_loaded',
+	static function (): void {
+		remove_action( 'wp_head', 'playground_enable_view_transitions', 0 );
+		remove_action( 'admin_print_styles', 'playground_enable_view_transitions', 0 );
+		remove_action( 'login_head', 'playground_enable_view_transitions', 0 );
+	},
+	PHP_INT_MAX
+);
+
 add_action(
 	'init',
 	static function (): void {
