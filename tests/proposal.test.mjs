@@ -5,7 +5,7 @@ import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { prepareServiceWorker, releaseFingerprint } from '../scripts/service-worker-release.mjs';
+import { prepareServiceWorker, releaseFingerprint, weWpRuntimeMime } from '../scripts/service-worker-release.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const registry = JSON.parse(await readFile(join(root, 'registry', 'plugins.json'), 'utf8'));
@@ -100,6 +100,10 @@ test('release worker refreshes first-party shell without changing pinned runtime
     assert.match(prepared.serviceWorker, new RegExp(route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
   assert.match(prepared.serviceWorker, /weWpShellRequest\(e\.request\)/);
+  assert.match(prepared.serviceWorker, /function weWpRuntimeMime\(response, requestUrl\)/);
+  assert.match(prepared.serviceWorker, /kc\(e,a\)\.then\(o=>weWpRuntimeMime\(o,e\.request\.url\)\)\.then\(o=>Pr\(o,a\)\)/);
+  assert.equal(upstream.split('kc(e,a).then(o=>Pr(o,a))').length - 1, 1);
+  assert.doesNotMatch(prepared.serviceWorker, /kc\(e,a\)\.then\(o=>Pr\(o,a\)\)/);
   assert.doesNotMatch(prepared.serviceWorker, new RegExp(`const Ks="${prepared.upstreamKey}",`));
   assert.doesNotMatch(prepared.runtimeWorker, new RegExp(`buildVersion="${prepared.upstreamKey}",`));
   assert.match(upstream, /match\(e,\{ignoreSearch:!0\}\)/);
@@ -109,6 +113,31 @@ test('release worker refreshes first-party shell without changing pinned runtime
     () => prepareServiceWorker(upstream, upstreamRuntimeWorker.replace(/buildVersion="[a-f0-9]{40}"/, 'buildVersion="missing"'), first),
     /Expected one pinned Playground runtime-worker cache identity, found 0/
   );
+});
+
+test('runtime MIME policy changes only missing or generic static responses', async () => {
+  const correct = new Response('window.ok = true;', {
+    headers: { 'content-type': 'text/javascript', 'x-proof': 'kept' }
+  });
+  assert.equal(weWpRuntimeMime(correct, 'https://demo.test/scope:1/script.js'), correct);
+
+  const generic = new Response('window.ok = true;', {
+    status: 206,
+    statusText: 'Partial Content',
+    headers: { 'content-type': 'application/octet-stream', 'x-proof': 'kept' }
+  });
+  const corrected = weWpRuntimeMime(generic, 'https://demo.test/scope:1/wp-includes/script.js?ver=1');
+  assert.notEqual(corrected, generic);
+  assert.equal(corrected.status, 206);
+  assert.equal(corrected.statusText, 'Partial Content');
+  assert.equal(corrected.headers.get('content-type'), 'application/javascript');
+  assert.equal(corrected.headers.get('x-proof'), 'kept');
+  assert.equal(await corrected.text(), 'window.ok = true;');
+
+  const missing = new Response(new TextEncoder().encode('body {}'));
+  assert.equal(weWpRuntimeMime(missing, 'https://demo.test/scope:1/theme.css').headers.get('content-type'), 'text/css');
+  const unknown = new Response('opaque', { headers: { 'content-type': 'application/octet-stream' } });
+  assert.equal(weWpRuntimeMime(unknown, 'https://demo.test/scope:1/file.bin'), unknown);
 });
 
 test('MIME policy changes rotate the release worker cache', async () => {

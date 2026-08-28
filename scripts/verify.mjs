@@ -21,6 +21,10 @@ if (releaseRuntimeWorker === upstreamRuntimeWorker) throw new Error('Built Playg
 if (!/-we-wp-[a-f0-9]{16}",Gr="playground-cache"/.test(releaseWorker)) throw new Error('Built service worker has no release-specific cache key');
 if (!/-we-wp-[a-f0-9]{16}",CACHE_NAME_PREFIX="playground-cache"/.test(releaseRuntimeWorker)) throw new Error('Built Playground runtime worker has no release-specific cache key');
 if (!/weWpShellRequest\(e\.request\)/.test(releaseWorker)) throw new Error('Built service worker does not refresh first-party shell routes network-first');
+if (!/function weWpRuntimeMime\(response, requestUrl\)/.test(releaseWorker)) throw new Error('Built service worker has no virtual response MIME policy');
+if (!/kc\(e,a\)\.then\(o=>weWpRuntimeMime\(o,e\.request\.url\)\)\.then\(o=>Pr\(o,a\)\)/.test(releaseWorker)) throw new Error('Built service worker does not normalize the Playground virtual response');
+if (releaseWorker.includes('kc(e,a).then(o=>Pr(o,a))')) throw new Error('Built service worker retains the unpatched Playground virtual response');
+if (upstreamWorker.includes('weWpRuntimeMime')) throw new Error('Pinned Playground service worker source was modified');
 const upstreamBuildVersion = runtimeLock.source.headSha;
 if (releaseWorker.includes(`const Ks="${upstreamBuildVersion}",Gr="playground-cache"`)) throw new Error('Built service worker retains an unversioned cache identity');
 if (releaseRuntimeWorker.includes(`buildVersion="${upstreamBuildVersion}",CACHE_NAME_PREFIX="playground-cache"`)) throw new Error('Built runtime worker retains an unversioned cache identity');
