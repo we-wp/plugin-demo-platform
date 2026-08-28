@@ -11,7 +11,7 @@
       "status": "interactive-demo-ready",
       "summary": "Create fixed WooCommerce bundles with clear component pricing, stock, and order records.",
       "demoPath": "/plugins/advanced-bundles/",
-      "productPath": null,
+      "productPath": "https://we-wp.com/plugins/aim-advanced-bundles",
       "sourceUrl": "https://github.com/we-wp/advanced-bundles-for-woocommerce",
       "releaseUrl": "https://github.com/we-wp/advanced-bundles-for-woocommerce/releases/tag/v0.1.0",
       "runtime": {

@@ -34,6 +34,7 @@ function renderCatalogue(registry) {
     const ready = plugin.runtime?.ready === true && plugin.demoPath;
     const actions = [];
     if (ready) actions.push(`<a class="button button-secondary" href="${escapeHtml(plugin.demoPath)}">Try interactive demo</a>`);
+    if (plugin.productPath) actions.push(`<a class="text-link" href="${escapeHtml(plugin.productPath)}" target="_blank" rel="noopener noreferrer">Product details</a>`);
     if (plugin.releaseUrl) actions.push(`<a class="text-link" href="${escapeHtml(plugin.releaseUrl)}" target="_blank" rel="noopener noreferrer">Download Free</a>`);
     if (plugin.sourceUrl) actions.push(`<a class="text-link" href="${escapeHtml(plugin.sourceUrl)}" target="_blank" rel="noopener noreferrer">View source</a>`);
     const action = actions.length > 0 ? actions.join('') : '<span class="coming-label">Coming soon</span>';
@@ -233,6 +234,7 @@ function setupInteractiveDemo(plugin) {
   const packageActions = document.querySelector('[data-plugin-actions]');
   if (packageActions) {
     packageActions.innerHTML = `
+      <a class="button button-secondary" href="${escapeHtml(plugin.productPath)}" target="_blank" rel="noopener noreferrer">Product details</a>
       <a class="button button-primary" href="${escapeHtml(plugin.releaseUrl)}" target="_blank" rel="noopener noreferrer">Download Free</a>
       <a class="button button-secondary" href="${escapeHtml(plugin.sourceUrl)}" target="_blank" rel="noopener noreferrer">View source on GitHub</a>`;
   }
