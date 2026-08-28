@@ -11,6 +11,17 @@ Before production:
 5. Obtain explicit DNS approval for `demo.we-wp.com`, then add TLS and verify the final certificate chain.
 6. Verify anonymous desktop and mobile demos, bundle hash, headers, health endpoints, rate limits, outbound blocks, and reload reset behavior in production.
 
+For the approved `demo.we-wp.com` deployment, serve `dist/` from the isolated
+site user and include `deploy/nginx/security-headers.conf` in every explicit
+static-file location. Forge's generated static locations add their own headers,
+so relying only on server-level inheritance can silently drop the Playground
+isolation policy. Verify raw headers on HTML, JavaScript, WebAssembly, Zstandard,
+ZIP, service-worker, health, and missing-file responses after every Nginx edit.
+
+The source checkout must resolve to the exact public `main` commit before
+`npm run check` builds `dist/`. Keep the public repository as the canonical
+source even when the Forge GitHub App cannot enumerate the organization.
+
 Selecting an existing Forge server does not itself approve a new site, deployment, Nginx change, certificate, or DNS record.
 
 Signing metadata must declare `algorithm: Ed25519`, a versioned public `keyId`, the lowercase SHA-256 fingerprint of the decoded 32-byte public key, the detached base64 signature path, and the canonical manifest hash. Verification must reject an unknown key ID, fingerprint mismatch, non-64-byte signature, changed manifest bytes, or artifact hash mismatch. The private key stays outside GitHub, Forge, application configuration, logs, and this repository.

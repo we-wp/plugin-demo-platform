@@ -120,3 +120,18 @@ test('public shell has no Pro source, external script, or fancy dash characters'
     if (file.endsWith('.html')) assert.doesNotMatch(text, /<(script|link)[^>]+https?:\/\//i);
   }
 });
+
+test('production Nginx header include preserves Playground isolation', async () => {
+  const headers = await readFile(join(root, 'deploy', 'nginx', 'security-headers.conf'), 'utf8');
+  for (const required of [
+    "script-src 'self' 'wasm-unsafe-eval'",
+    'Cross-Origin-Embedder-Policy "require-corp"',
+    'Cross-Origin-Opener-Policy "same-origin"',
+    'Cross-Origin-Resource-Policy "same-origin"',
+    'X-Content-Type-Options "nosniff"',
+    'X-Robots-Tag "noindex, nofollow"'
+  ]) {
+    assert.match(headers, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+  assert.doesNotMatch(headers, /https?:\/\//);
+});
