@@ -12,6 +12,7 @@ const runtimeSource = join(root, 'runtime', 'playground');
 const blueprintSource = join(root, 'blueprints', 'advanced-bundles');
 const blueprintStage = join(root, '.build', 'advanced-bundles');
 const bundlePath = join(dist, 'demo-assets', 'advanced-bundles-demo.zip');
+const runtimeWorkerRelativePath = 'playground-worker-endpoint-blueprints-Cefw2Oy_.js';
 
 await rm(dist, { recursive: true, force: true });
 await rm(join(root, '.build'), { recursive: true, force: true });
@@ -70,8 +71,10 @@ for (const path of await filesWithin(blueprintSource)) {
 
 const workerFingerprint = releaseFingerprint(releaseInputs);
 const upstreamWorker = await readFile(join(runtimeSource, 'sw.js'), 'utf8');
-const releaseWorker = prepareServiceWorker(upstreamWorker, workerFingerprint);
-await writeFile(join(dist, 'sw.js'), releaseWorker);
+const upstreamRuntimeWorker = await readFile(join(runtimeSource, runtimeWorkerRelativePath), 'utf8');
+const releaseWorkers = prepareServiceWorker(upstreamWorker, upstreamRuntimeWorker, workerFingerprint);
+await writeFile(join(dist, 'sw.js'), releaseWorkers.serviceWorker);
+await writeFile(join(dist, runtimeWorkerRelativePath), releaseWorkers.runtimeWorker);
 
 const files = (await filesWithin(dist)).sort();
 const manifest = { schemaVersion: 1, files: [] };

@@ -84,20 +84,31 @@ test('pinned self-hosted runtime selection is imported and ready', async () => {
 
 test('release worker refreshes first-party shell without changing pinned runtime source', async () => {
   const upstream = await readFile(join(root, 'runtime', 'playground', 'sw.js'), 'utf8');
+  const upstreamRuntimeWorker = await readFile(join(root, 'runtime', 'playground', 'playground-worker-endpoint-blueprints-Cefw2Oy_.js'), 'utf8');
   const first = releaseFingerprint([{ path: 'src/index.html', bytes: Buffer.from('first') }]);
   const second = releaseFingerprint([{ path: 'src/index.html', bytes: Buffer.from('second') }]);
   assert.notEqual(first, second);
 
-  const prepared = prepareServiceWorker(upstream, first);
-  assert.notEqual(prepared, upstream);
-  assert.match(prepared, new RegExp(`-we-wp-${first}`));
-  assert.match(prepared, /Gr="playground-cache"/);
+  const prepared = prepareServiceWorker(upstream, upstreamRuntimeWorker, first);
+  assert.notEqual(prepared.serviceWorker, upstream);
+  assert.notEqual(prepared.runtimeWorker, upstreamRuntimeWorker);
+  assert.match(prepared.serviceWorker, new RegExp(`-we-wp-${first}`));
+  assert.match(prepared.runtimeWorker, new RegExp(`-we-wp-${first}`));
+  assert.match(prepared.serviceWorker, /Gr="playground-cache"/);
+  assert.match(prepared.runtimeWorker, /CACHE_NAME_PREFIX="playground-cache"/);
   for (const route of ['/plugins/', '/data/', '/demo-assets/', '/health/', '/assets/app.js', '/assets/app.css']) {
-    assert.match(prepared, new RegExp(route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    assert.match(prepared.serviceWorker, new RegExp(route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
-  assert.match(prepared, /weWpShellRequest\(e\.request\)/);
+  assert.match(prepared.serviceWorker, /weWpShellRequest\(e\.request\)/);
+  assert.doesNotMatch(prepared.serviceWorker, new RegExp(`const Ks="${prepared.upstreamKey}",`));
+  assert.doesNotMatch(prepared.runtimeWorker, new RegExp(`buildVersion="${prepared.upstreamKey}",`));
   assert.match(upstream, /match\(e,\{ignoreSearch:!0\}\)/);
   assert.doesNotMatch(upstream, /weWpShellRequest|we-wp-/);
+  assert.doesNotMatch(upstreamRuntimeWorker, /we-wp-/);
+  assert.throws(
+    () => prepareServiceWorker(upstream, upstreamRuntimeWorker.replace(/buildVersion="[a-f0-9]{40}"/, 'buildVersion="missing"'), first),
+    /Expected one pinned Playground runtime-worker cache identity, found 0/
+  );
 });
 
 test('MIME policy changes rotate the release worker cache', async () => {

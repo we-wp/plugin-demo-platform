@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto';
 
 const cacheIdentityPattern = /const Ks="([a-f0-9]{40})",Gr="playground-cache"/g;
+const runtimeCacheIdentityPattern = /buildVersion="([a-f0-9]{40})",CACHE_NAME_PREFIX="playground-cache"/g;
 const networkFirstNeedle = 'if(n.pathname==="/remote.html"||n.pathname==="/api.html"||n.pathname==="/")';
-const policyVersion = 'we-wp-shell-network-first-v2';
+const policyVersion = 'we-wp-shell-network-first-v3';
 const shellPolicy = 'function weWpShellRequest(e){const n=new URL(e.url);return n.pathname==="/index.html"||n.pathname==="/favicon.ico"||n.pathname==="/build-manifest.json"||n.pathname==="/assets/app.js"||n.pathname==="/assets/app.css"||n.pathname.startsWith("/assets/fonts/")||n.pathname.startsWith("/assets/screenshots/")||n.pathname.startsWith("/data/")||n.pathname.startsWith("/demo-assets/")||n.pathname.startsWith("/health/")||n.pathname.startsWith("/plugins/")}';
 
 export function releaseFingerprint(entries) {
@@ -13,18 +14,31 @@ export function releaseFingerprint(entries) {
   return hash.digest('hex').slice(0, 16);
 }
 
-export function prepareServiceWorker(upstreamSource, fingerprint) {
+export function prepareServiceWorker(upstreamSource, runtimeWorkerSource, fingerprint) {
   if (!/^[a-f0-9]{16}$/.test(fingerprint)) throw new Error('Service-worker release fingerprint must be 16 lowercase hex characters');
 
   const cacheMatches = [...upstreamSource.matchAll(cacheIdentityPattern)];
-  if (cacheMatches.length !== 1) throw new Error(`Expected one pinned Playground cache identity, found ${cacheMatches.length}`);
+  if (cacheMatches.length !== 1) throw new Error(`Expected one pinned Playground service-worker cache identity, found ${cacheMatches.length}`);
+  const runtimeCacheMatches = [...runtimeWorkerSource.matchAll(runtimeCacheIdentityPattern)];
+  if (runtimeCacheMatches.length !== 1) throw new Error(`Expected one pinned Playground runtime-worker cache identity, found ${runtimeCacheMatches.length}`);
+  if (cacheMatches[0][1] !== runtimeCacheMatches[0][1]) throw new Error('Pinned Playground cache identities do not share one upstream build version');
   const networkMatches = upstreamSource.split(networkFirstNeedle).length - 1;
   if (networkMatches !== 1) throw new Error(`Expected one pinned Playground network-first branch, found ${networkMatches}`);
 
   const upstreamKey = cacheMatches[0][1];
-  return upstreamSource
-    .replace(cacheMatches[0][0], `${shellPolicy}const Ks="${upstreamKey}-we-wp-${fingerprint}",Gr="playground-cache"`)
+  const versionedKey = `${upstreamKey}-we-wp-${fingerprint}`;
+  const serviceWorker = upstreamSource
+    .replace(cacheMatches[0][0], `${shellPolicy}const Ks="${versionedKey}",Gr="playground-cache"`)
     .replace(networkFirstNeedle, `if(n.pathname==="/remote.html"||n.pathname==="/api.html"||n.pathname==="/"||weWpShellRequest(e.request))`);
+  const runtimeWorker = runtimeWorkerSource.replace(
+    runtimeCacheMatches[0][0],
+    `buildVersion="${versionedKey}",CACHE_NAME_PREFIX="playground-cache"`
+  );
+
+  if (serviceWorker.includes(`const Ks="${upstreamKey}",Gr="playground-cache"`)) throw new Error('Unversioned service-worker cache identity remains');
+  if (runtimeWorker.includes(`buildVersion="${upstreamKey}",CACHE_NAME_PREFIX="playground-cache"`)) throw new Error('Unversioned runtime-worker cache identity remains');
+
+  return { serviceWorker, runtimeWorker, upstreamKey, versionedKey };
 }
 
 export const serviceWorkerPolicyVersion = policyVersion;
