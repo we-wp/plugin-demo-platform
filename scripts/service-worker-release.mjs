@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 
 const cacheIdentityPattern = /const Ks="([a-f0-9]{40})",Gr="playground-cache"/g;
 const networkFirstNeedle = 'if(n.pathname==="/remote.html"||n.pathname==="/api.html"||n.pathname==="/")';
-const policyVersion = 'we-wp-shell-network-first-v1';
+const policyVersion = 'we-wp-shell-network-first-v2';
 const shellPolicy = 'function weWpShellRequest(e){const n=new URL(e.url);return n.pathname==="/index.html"||n.pathname==="/favicon.ico"||n.pathname==="/build-manifest.json"||n.pathname==="/assets/app.js"||n.pathname==="/assets/app.css"||n.pathname.startsWith("/assets/fonts/")||n.pathname.startsWith("/assets/screenshots/")||n.pathname.startsWith("/data/")||n.pathname.startsWith("/demo-assets/")||n.pathname.startsWith("/health/")||n.pathname.startsWith("/plugins/")}';
 
 export function releaseFingerprint(entries) {

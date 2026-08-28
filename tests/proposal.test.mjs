@@ -100,6 +100,18 @@ test('release worker refreshes first-party shell without changing pinned runtime
   assert.doesNotMatch(upstream, /weWpShellRequest|we-wp-/);
 });
 
+test('MIME policy changes rotate the release worker cache', async () => {
+  const mimePath = 'deploy/nginx/static-mime-types.conf';
+  const mimeBytes = await readFile(join(root, mimePath));
+  const current = releaseFingerprint([{ path: mimePath, bytes: mimeBytes }]);
+  const changed = releaseFingerprint([{ path: mimePath, bytes: Buffer.concat([mimeBytes, Buffer.from('\n# changed\n')]) }]);
+  assert.notEqual(current, changed);
+
+  const build = await readFile(join(root, 'scripts', 'build.mjs'), 'utf8');
+  assert.match(build, /path: 'deploy\/nginx\/static-mime-types\.conf'/);
+  assert.match(build, /readFile\(join\(root, 'deploy', 'nginx', 'static-mime-types\.conf'\)\)/);
+});
+
 test('redistributed PHP, font, and synthetic fixtures have pinned provenance', async () => {
   const expectedHashes = new Map([
     ['LICENSES/PHP-3.01.txt', 'b42e4df5e50e6ecda1047d503d6d91d71032d09ed1027ba1ef29eed26f890c5a'],

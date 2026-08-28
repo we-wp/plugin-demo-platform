@@ -57,6 +57,10 @@ releaseInputs.push({
   path: 'registry/plugins.json',
   bytes: await readFile(join(root, 'registry', 'plugins.json'))
 });
+releaseInputs.push({
+  path: 'deploy/nginx/static-mime-types.conf',
+  bytes: await readFile(join(root, 'deploy', 'nginx', 'static-mime-types.conf'))
+});
 for (const path of await filesWithin(blueprintSource)) {
   releaseInputs.push({
     path: `blueprints/advanced-bundles/${relative(blueprintSource, path).replaceAll('\\', '/')}`,
