@@ -13,10 +13,26 @@ Before production:
 
 For the approved `demo.we-wp.com` deployment, serve `dist/` from the isolated
 site user and include `deploy/nginx/security-headers.conf` in every explicit
-static-file location. Forge's generated static locations add their own headers,
+static-file location. Include `deploy/nginx/static-mime-types.conf` in every
+location that declares `types`; do not use a wasm/Zstandard/ZIP-only `types`
+block because location-level MIME maps replace inherited JavaScript, CSS, font,
+and image mappings. Forge's generated static locations add their own headers,
 so relying only on server-level inheritance can silently drop the Playground
 isolation policy. Verify raw headers on HTML, JavaScript, WebAssembly, Zstandard,
 ZIP, service-worker, health, and missing-file responses after every Nginx edit.
+
+Before reloading Nginx, run `sudo nginx -t`. After reload, these probes must
+return `application/javascript` and `text/css`, never
+`application/octet-stream`:
+
+```sh
+curl -fsSI https://demo.we-wp.com/wp-6.9/wp-includes/js/jquery/jquery.min.js
+curl -fsSI https://demo.we-wp.com/assets/app.js
+curl -fsSI https://demo.we-wp.com/assets/app.css
+```
+
+Keep `X-Content-Type-Options: nosniff`. Removing it would hide a broken MIME
+configuration and weaken the deployment instead of fixing the asset response.
 
 The source checkout must resolve to the exact public `main` commit before
 `npm run check` builds `dist/`. Keep the public repository as the canonical

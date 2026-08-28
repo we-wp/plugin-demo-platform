@@ -6,6 +6,7 @@
 - Order attribution, remote avatars, and remote emoji images are disabled because they add no value to the synthetic demo and would create outbound requests or console warnings.
 - The outer server allows only same-origin scripts, workers, frames, and connections plus the local data and blob schemes required by Playground. Inline scripts remain blocked; inline styles are allowed because the official remote shell sizes its nested WordPress frame with an inline stylesheet.
 - Cross-origin opener and embedder isolation is required on the static server. WordPress storefront and admin responses also emit the matching embedder and resource policy headers.
+- Production static locations use the complete checked-in MIME map. JavaScript must be served as `application/javascript` while `X-Content-Type-Options: nosniff` remains enabled.
 - Only a synthetic offline order method is available. No Stripe, PayPal, or live payment credentials exist.
 - File editing, plugin or theme changes, user management, application passwords, XML-RPC, and automatic updates are disabled.
 - Uploads are limited to JPG, PNG, and WebP files up to 2 MB inside the temporary browser filesystem.

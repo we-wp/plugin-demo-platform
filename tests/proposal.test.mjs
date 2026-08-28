@@ -156,3 +156,24 @@ test('production Nginx header include preserves Playground isolation', async () 
   }
   assert.doesNotMatch(headers, /https?:\/\//);
 });
+
+test('production Nginx MIME map covers every built file extension', async () => {
+  const mimeTypes = await readFile(join(root, 'deploy', 'nginx', 'static-mime-types.conf'), 'utf8');
+  const builtFiles = await readdir(join(root, 'dist'), { recursive: true });
+  const builtFileNames = [];
+  for (const file of builtFiles) {
+    if ((await stat(join(root, 'dist', file))).isFile()) builtFileNames.push(file);
+  }
+  const builtExtensions = new Set(builtFileNames
+    .map((file) => file.split(/[/\\]/).pop())
+    .filter((file) => file.includes('.'))
+    .map((file) => file.split('.').pop().toLowerCase()));
+
+  for (const extension of builtExtensions) {
+    assert.match(mimeTypes, new RegExp(`(?:^|\\s)${extension.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:[;\\s])`, 'm'), `Missing Nginx MIME mapping for .${extension}`);
+  }
+  assert.match(mimeTypes, /application\/javascript\s+js;/);
+  assert.match(mimeTypes, /text\/css\s+css;/);
+  assert.match(mimeTypes, /font\/woff2\s+woff2;/);
+  assert.match(mimeTypes, /application\/wasm\s+wasm;/);
+});
