@@ -2,9 +2,11 @@
 
 Publishing this source repository does not approve arbitrary Forge or DNS work. The owner approved the current `demo.we-wp.com` production deployment on 2026-08-29. Future site, Nginx, DNS, certificate, or unrelated server changes require explicit scope.
 
-Current deployed behavior is commit `7e6ae9e0ac42a877fee8483ce345fa5a1665485e` through Forge command `12464453`. The command finished after checking the exact detached commit and running the repository check. Current source `main` at `3f4dce312306af973f144e7fc75c7db166ec4438` adds test coverage only. It passes 18 Node tests and verifies 2,079 built files. The exact Free installer remains SHA-256 `cfd0f4cba21842d7216f1565bfe4ae874de29abf9a081d1620229e37b38ee2d4`, 55,745 bytes, and 44 ZIP entries.
+Current deployed behavior is commit `7e6ae9e0ac42a877fee8483ce345fa5a1665485e` through Forge command `12464453`. The command finished after checking the exact detached commit and running the repository check. Test-bearing source commit `3f4dce312306af973f144e7fc75c7db166ec4438` adds coverage only; later documentation-only commits do not change the built demo. The source check passes 18 Node tests and verifies 2,079 built files. The exact Free installer remains SHA-256 `cfd0f4cba21842d7216f1565bfe4ae874de29abf9a081d1620229e37b38ee2d4`, 55,745 bytes, and 44 ZIP entries.
 
 The current browser-start policy retries the top-level Playground client module once with a unique `release+run+retry` URL and retries the bundled Blueprint once with `cache: no-store` and omitted credentials. A later visible Try again increments the run identifier so rejected browser module-map entries are not reused. Production HTTP checks must prove both sampled client URLs return JavaScript with `Cache-Control: no-store`. If a failure identifies a hashed child chunk instead of `/client/index.js`, stop and generate deployment-only wrapper variants; do not edit the pinned upstream runtime source.
+
+Independent production browser QA returned GO against behavior `7e6ae9e`. Fresh 1440 × 900 and 390 × 844 tabs reached the isolated store from one Start click with no human retry or console warning/error. Cart contained exactly one bundle container and two component lines with quantities 1/2/1 and EUR 32.50. Repeated Cart and Checkout preserved those contents. Outer and nested frames had no horizontal overflow, and no GitHub installer ZIP request occurred.
 
 Before production:
 
