@@ -5,6 +5,7 @@ export async function loadPlaygroundClient({
   importModule = (url) => import(url),
   path = '/client/index.js',
   artifactSha256,
+  runId,
   origin = window.location.origin,
   onRetry = () => {},
   wait = (milliseconds) => new Promise((resolve) => window.setTimeout(resolve, milliseconds))
@@ -14,6 +15,7 @@ export async function loadPlaygroundClient({
   for (let attempt = 0; attempt < playgroundClientLoadAttempts; attempt += 1) {
     const url = new URL(path, origin);
     url.searchParams.set('release', artifactSha256.slice(0, 12));
+    url.searchParams.set('run', String(runId));
     if (attempt > 0) url.searchParams.set('retry', String(attempt));
 
     try {

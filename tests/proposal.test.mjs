@@ -259,6 +259,7 @@ test('Playground client loader retries one transient module fetch with a unique 
   let retries = 0;
   const result = await loadPlaygroundClient({
     artifactSha256: lock.plugin.sha256,
+    runId: 7,
     origin: 'https://demo.we-wp.com',
     importModule: async (url) => {
       importCalls.push(url);
@@ -273,8 +274,8 @@ test('Playground client loader retries one transient module fetch with a unique 
   assert.equal(importCalls.length, 2);
   assert.equal(retries, 1);
   assert.deepEqual(waits, [750]);
-  assert.match(importCalls[0], /\/client\/index\.js\?release=cfd0f4cba218$/);
-  assert.match(importCalls[1], /release=cfd0f4cba218&retry=1$/);
+  assert.match(importCalls[0], /\/client\/index\.js\?release=cfd0f4cba218&run=7$/);
+  assert.match(importCalls[1], /release=cfd0f4cba218&run=7&retry=1$/);
 });
 
 test('demo-only route helper preserves manual carts and verifies the populated destination', async () => {

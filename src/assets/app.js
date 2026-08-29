@@ -1,4 +1,4 @@
-import { loadPlaygroundClient, resolveDemoBlueprint } from '/assets/blueprint-resolver.js?v=2';
+import { loadPlaygroundClient, resolveDemoBlueprint } from '/assets/blueprint-resolver.js?v=3';
 
 const registryUrl = '/data/plugins.json';
 const loopbackHosts = new Set(['127.0.0.1', 'localhost', '::1']);
@@ -320,6 +320,7 @@ async function startInteractiveDemo({ expectCleanReset = false } = {}) {
     }
     const { resolveRemoteBlueprint, startPlaygroundWeb } = await loadPlaygroundClient({
       artifactSha256: demoState.plugin.artifact.sha256,
+      runId: generation,
       onRetry: () => {
         document.querySelector('[data-runtime-status]').textContent = 'Retrying the demo runtime once.';
       }
