@@ -1,6 +1,11 @@
 const registryUrl = '/data/plugins.json';
 const loopbackHosts = new Set(['127.0.0.1', 'localhost', '::1']);
-const demoState = { client: null, generation: 0, plugin: null, proof: null };
+const demoState = {
+  client: null,
+  generation: 0,
+  plugin: null,
+  proof: null
+};
 
 const escapeHtml = (value) => String(value)
   .replaceAll('&', '&amp;')
@@ -111,6 +116,7 @@ function setRuntimeState(state, message) {
   const loading = document.querySelector('[data-runtime-loading]');
   const error = document.querySelector('[data-runtime-error]');
   const controls = document.querySelector('[data-runtime-controls]');
+  const routeGuide = document.querySelector('[data-runtime-route-guide]');
   const frameHost = document.querySelector('[data-runtime-frame-host]');
   const toolbarState = document.querySelector('[data-toolbar-runtime-state]');
 
@@ -122,9 +128,124 @@ function setRuntimeState(state, message) {
   loading.hidden = state !== 'loading';
   error.hidden = state !== 'error';
   controls.hidden = state !== 'ready';
+  routeGuide.hidden = state !== 'ready';
   frameHost.hidden = state !== 'ready';
   document.querySelectorAll('[data-runtime-status]').forEach((status) => { status.textContent = message; });
   toolbarState.textContent = state === 'ready' ? 'Isolated store ready' : state === 'loading' ? 'Preparing temporary store' : state === 'error' ? 'Demo could not start' : 'Screenshot tour';
+}
+
+function setRouteGuide(state, title, message) {
+  const guide = document.querySelector('[data-runtime-route-guide]');
+  if (!guide) return;
+  guide.dataset.state = state;
+  if (!['loaded', 'preserved'].includes(state)) delete guide.dataset.cartAction;
+  guide.querySelector('[data-runtime-route-title]').textContent = title;
+  guide.querySelector('[data-runtime-route-message]').textContent = message;
+}
+
+function setRouteControlsDisabled(disabled) {
+  document.querySelectorAll('[data-demo-route], [data-runtime-reset]').forEach((control) => {
+    control.disabled = disabled;
+  });
+}
+
+function setSelectedRoute(selectedButton) {
+  document.querySelectorAll('[data-demo-route]').forEach((button) => {
+    button.setAttribute('aria-pressed', String(button === selectedButton));
+  });
+}
+
+function createRequestId() {
+  const bytes = new Uint8Array(12);
+  crypto.getRandomValues(bytes);
+  return [...bytes].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+async function readExampleRouteResult(client, requestId) {
+  const optionName = `we_wp_demo_route_${requestId}`;
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    const response = await client.run({
+      code: `<?php
+require_once '/wordpress/wp-load.php';
+$result = get_option( ${JSON.stringify(optionName)}, null );
+if ( is_array( $result ) && isset( $result['actualRoute'] ) ) {
+    delete_option( ${JSON.stringify(optionName)} );
+}
+echo wp_json_encode( $result );`
+    });
+    const result = JSON.parse(response.text.trim() || 'null');
+    if (result?.actualRoute) return result;
+    await new Promise((resolve) => window.setTimeout(resolve, 200));
+  }
+  throw new Error('Demo route verification timed out. Your cart was not changed again.');
+}
+
+function verifyExampleRouteResult(result, requestedRoute, requestId) {
+  if (!result || result.requestId !== requestId || result.requestedRoute !== requestedRoute) {
+    throw new Error('Demo route verification returned the wrong request. Retry or reset the store.');
+  }
+  if (result.state === 'error') {
+    throw new Error(result.message || 'Example cart could not be prepared. Retry or reset the store.');
+  }
+  if (result.actualRoute !== requestedRoute || result.cartEmpty === true || result.cartItemCount < 1) {
+    throw new Error(`${requestedRoute === 'checkout' ? 'Checkout' : 'Cart'} did not open with a usable cart. Retry or reset the store.`);
+  }
+  if (result.state === 'loaded' && (
+    result.cartItemCount !== 3
+    || result.bundleGroups !== 1
+    || result.bundleQuantity !== 1
+    || result.componentLines !== 2
+    || result.componentQuantity !== 3
+    || result.componentTotalMinor !== 3250
+  )) {
+    throw new Error('Example bundle verification failed. Reset the temporary store before retrying.');
+  }
+  if (!['loaded', 'preserved'].includes(result.state)) {
+    throw new Error('Demo route returned an unknown cart state. Retry or reset the store.');
+  }
+}
+
+async function openExampleRoute(button, requestedRoute) {
+  const requestId = createRequestId();
+  const label = requestedRoute === 'checkout' ? 'checkout' : 'cart';
+  const toolbarState = document.querySelector('[data-toolbar-runtime-state]');
+  setRouteControlsDisabled(true);
+  setRouteGuide('loading', `Preparing ${label}.`, 'Checking your temporary cart before opening this step.');
+  toolbarState.textContent = `Preparing ${label}`;
+
+  try {
+    const actionUrl = `/?we_wp_demo_example=${requestedRoute}&we_wp_demo_request=${requestId}`;
+    await demoState.client.goTo(actionUrl);
+    const result = await readExampleRouteResult(demoState.client, requestId);
+    verifyExampleRouteResult(result, requestedRoute, requestId);
+    setSelectedRoute(button);
+    toolbarState.textContent = 'Interactive store ready';
+
+    if (result.state === 'loaded') {
+      setRouteGuide(
+        'loaded',
+        'Example cart loaded.',
+        `Showing ${label} with one fixed bundle, two component lines, and a EUR 32.50 component total.`
+      );
+    } else {
+      setRouteGuide(
+        'preserved',
+        'Existing demo cart kept.',
+        `Showing ${label} without adding, removing, or replacing your current items.`
+      );
+    }
+    document.querySelector('[data-runtime-route-guide]').dataset.cartAction = result.state;
+    document.querySelector('.runtime-frame')?.focus();
+  } catch (error) {
+    toolbarState.textContent = 'Demo route unavailable';
+    setRouteGuide(
+      'error',
+      `Could not open ${label}.`,
+      error instanceof Error ? error.message : 'Retry this step or reset the store.'
+    );
+  } finally {
+    setRouteControlsDisabled(false);
+  }
 }
 
 function createRuntimeFrame() {
@@ -214,9 +335,8 @@ async function startInteractiveDemo({ expectCleanReset = false } = {}) {
     demoState.proof = proof;
     setRuntimeState('ready', `Temporary store ready. WordPress ${proof.wordpress}, WooCommerce ${proof.woocommerce}, Advanced Bundles Free 0.1.0.`);
     await client.goTo('/product/workshop-starter-bundle/');
-    document.querySelectorAll('[data-demo-route]').forEach((button) => {
-      button.setAttribute('aria-pressed', String(button.dataset.demoRoute === '/product/workshop-starter-bundle/'));
-    });
+    setSelectedRoute(document.querySelector('[data-demo-route="/product/workshop-starter-bundle/"]'));
+    setRouteGuide('idle', 'Try the full order flow.', 'Cart and Checkout load one example bundle only when your demo cart is empty.');
   } catch (error) {
     if (generation !== demoState.generation) return;
     console.error(error);
@@ -246,28 +366,45 @@ function setupInteractiveDemo(plugin) {
   document.querySelector('[data-demo-start]')?.addEventListener('click', () => startInteractiveDemo());
   document.querySelector('[data-runtime-retry]')?.addEventListener('click', () => startInteractiveDemo());
   document.querySelector('[data-runtime-reset]')?.addEventListener('click', () => resetInteractiveDemo());
-    document.querySelectorAll('[data-demo-route]').forEach((button) => {
-      button.addEventListener('click', async () => {
-        if (!demoState.client) return;
-        const toolbarState = document.querySelector('[data-toolbar-runtime-state]');
-        const route = button.dataset.demoRoute === 'editor'
-          ? `/wp-admin/post.php?post=${demoState.proof.bundleId}&action=edit`
-          : button.dataset.demoRoute;
-        try {
-          toolbarState.textContent = `Opening ${button.textContent.trim().toLowerCase()}`;
-          const routeProbe = await demoState.client.request({ url: route });
-          if (routeProbe.httpStatusCode < 200 || routeProbe.httpStatusCode > 399) {
-            throw new Error(`Demo page returned ${routeProbe.httpStatusCode}.`);
-          }
-          await demoState.client.goTo(route);
-          document.querySelectorAll('[data-demo-route]').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
-          toolbarState.textContent = 'Interactive store ready';
-          document.querySelector('.runtime-frame')?.focus();
-        } catch (error) {
-          toolbarState.textContent = error instanceof Error ? error.message : 'Demo page could not open.';
+  document.querySelectorAll('[data-demo-route]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      if (!demoState.client) return;
+      if (button.dataset.demoRoute === '/cart/' || button.dataset.demoRoute === '/checkout/') {
+        const requestedRoute = button.dataset.demoRoute === '/checkout/' ? 'checkout' : 'cart';
+        await openExampleRoute(button, requestedRoute);
+        return;
+      }
+      const toolbarState = document.querySelector('[data-toolbar-runtime-state]');
+      const route = button.dataset.demoRoute === 'editor'
+        ? `/wp-admin/post.php?post=${demoState.proof.bundleId}&action=edit`
+        : button.dataset.demoRoute;
+      try {
+        toolbarState.textContent = `Opening ${button.textContent.trim().toLowerCase()}`;
+        const routeProbe = await demoState.client.request({ url: route });
+        if (routeProbe.httpStatusCode < 200 || routeProbe.httpStatusCode > 399) {
+          throw new Error(`Demo page returned ${routeProbe.httpStatusCode}.`);
         }
-      });
+        const expectedMarker = button.dataset.demoRoute === 'editor' ? 'Bundle components' : 'Included in this bundle';
+        if (!routeProbe.text.includes(expectedMarker)) {
+          throw new Error(`${button.textContent.trim()} verification failed.`);
+        }
+        await demoState.client.goTo(route);
+        setSelectedRoute(button);
+        toolbarState.textContent = 'Interactive store ready';
+        setRouteGuide(
+          'idle',
+          button.dataset.demoRoute === 'editor' ? 'Review the fixed recipe.' : 'Review the storefront bundle.',
+          button.dataset.demoRoute === 'editor'
+            ? 'Change products or quantities, then use Cart or Checkout to inspect your current demo cart.'
+            : 'Add the bundle manually, or use Cart or Checkout to load the example only when the cart is empty.'
+        );
+        document.querySelector('.runtime-frame')?.focus();
+      } catch (error) {
+        toolbarState.textContent = error instanceof Error ? error.message : 'Demo page could not open.';
+        setRouteGuide('error', 'Demo page could not open.', 'Retry this step or reset the store.');
+      }
     });
+  });
 }
 
 async function boot() {

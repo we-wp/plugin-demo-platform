@@ -903,6 +903,11 @@ h3 {
   cursor: pointer;
 }
 
+.runtime-controls button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
 .runtime-controls button:hover,
 .runtime-controls button[aria-pressed="true"] {
   border-color: var(--mint);
@@ -914,6 +919,62 @@ h3 {
   margin-left: auto;
   border-color: #7995ff;
   color: #dfe5ff;
+}
+
+.runtime-route-guide {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  min-height: 68px;
+  padding: 13px 18px;
+  border-bottom: 1px solid #3b4049;
+  background: #1d2127;
+  color: #dfe2e7;
+}
+
+.runtime-route-guide-mark {
+  width: 8px;
+  height: 8px;
+  margin-top: 7px;
+  border-radius: 50%;
+  background: #8f96a3;
+}
+
+.runtime-route-guide p {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.runtime-route-guide strong {
+  flex: 0 0 auto;
+  color: white;
+}
+
+.runtime-route-guide span:last-child {
+  color: #b8bdc6;
+}
+
+.runtime-route-guide[data-state="loading"] .runtime-route-guide-mark {
+  background: #9fb2ff;
+  animation: runtime-pulse 1.1s ease-in-out infinite;
+}
+
+.runtime-route-guide[data-state="loaded"] .runtime-route-guide-mark,
+.runtime-route-guide[data-state="preserved"] .runtime-route-guide-mark {
+  background: var(--mint);
+}
+
+.runtime-route-guide[data-state="error"] .runtime-route-guide-mark {
+  background: #ff9b9b;
+}
+
+.runtime-route-guide[data-state="error"] strong {
+  color: #ffd0d0;
 }
 
 .runtime-stage,
@@ -1335,6 +1396,16 @@ h3 {
     margin-left: 0;
   }
 
+  .runtime-route-guide {
+    padding-inline: 14px;
+  }
+
+  .runtime-route-guide p {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+
   .runtime-loading,
   .runtime-error {
     padding: 28px 20px;
@@ -1402,7 +1473,8 @@ h3 {
   .hero-visual,
   .loading-state > span,
   .runtime-spinner,
-  .demo-shell[data-runtime-state="loading"] .demo-runtime-state > span:first-child {
+  .demo-shell[data-runtime-state="loading"] .demo-runtime-state > span:first-child,
+  .runtime-route-guide[data-state="loading"] .runtime-route-guide-mark {
     animation: none;
   }
 

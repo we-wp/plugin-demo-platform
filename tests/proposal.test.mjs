@@ -196,9 +196,44 @@ test('interactive shell has reset, failure, and runtime safety verification stat
   assert.match(app, /plugin\.productPath/);
   assert.match(app, /target="_blank" rel="noopener noreferrer"/);
   assert.match(app, /data-tour-image-link/);
+  for (const required of [
+    'we_wp_demo_example',
+    'we_wp_demo_request',
+    'readExampleRouteResult',
+    'verifyExampleRouteResult',
+    'Example cart loaded.',
+    'Existing demo cart kept.',
+    'dataset.cartAction = result.state',
+    'componentTotalMinor !== 3250'
+  ]) {
+    assert.match(app, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
   assert.equal(page.split(installerUrl).length - 1, 2);
   assert.match(page, /data-tour-image-link/);
   assert.match(page, /Star Advanced Bundles on GitHub/);
+  assert.match(page, /data-runtime-route-guide/);
+  assert.match(page, /Cart and Checkout load one example bundle only when your demo cart is empty\./);
+});
+
+test('demo-only route helper preserves manual carts and verifies the populated destination', async () => {
+  const guard = await readFile(join(root, 'blueprints', 'advanced-bundles', 'mu-plugins', 'demo-guard.php'), 'utf8');
+  for (const required of [
+    'we_wp_demo_example',
+    'we_wp_demo_request',
+    "'loaded'",
+    "'preserved'",
+    "'actualRoute'",
+    "'cartEmpty'",
+    "'bundleGroups'",
+    "'componentLines'",
+    "'componentTotalMinor'",
+    '$cart->is_empty()',
+    '$cart->add_to_cart',
+    '$cart->empty_cart()',
+    'PHP_INT_MAX'
+  ]) {
+    assert.match(guard, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
 });
 
 test('public shell has no Pro source, external script, or fancy dash characters', async () => {

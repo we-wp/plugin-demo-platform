@@ -78,6 +78,13 @@
               <button type="button" data-demo-route="/checkout/" aria-pressed="false">Checkout</button>
               <button class="runtime-reset" type="button" data-runtime-reset>Reset store</button>
             </div>
+            <div class="runtime-route-guide" data-runtime-route-guide data-state="idle" role="status" aria-live="polite" hidden>
+              <span class="runtime-route-guide-mark" aria-hidden="true"></span>
+              <p>
+                <strong data-runtime-route-title>Try the full order flow.</strong>
+                <span data-runtime-route-message>Cart and Checkout load one example bundle only when your demo cart is empty.</span>
+              </p>
+            </div>
             <div class="runtime-stage">
               <div class="runtime-loading" data-runtime-loading role="status">
                 <span class="runtime-spinner" aria-hidden="true"></span>
