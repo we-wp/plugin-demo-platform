@@ -35,7 +35,7 @@ Open `http://localhost:8783/plugins/advanced-bundles/`, choose **Start interacti
 - Local source and preview: yes.
 - Local Chromium boot, add-to-cart, editor, cart, checkout, reset, outbound block, failure state, and 390/1440 responsive proof: yes.
 - Public source repository: `https://github.com/we-wp/plugin-demo-platform`.
-- Forge, DNS, or production deployment: no.
-- Production verified: no.
+- Forge deployment and `demo.we-wp.com` DNS/TLS: live.
+- Production verified through source commit `faa0fddbe4c991fe205619cceaae387c166a6aa5`; later commits require fresh deployment and anonymous browser proof.
 
 See `docs/architecture.md` and `docs/operations/forge-deploy.md` for the gated implementation path.

@@ -35,7 +35,8 @@ function renderCatalogue(registry) {
     const actions = [];
     if (ready) actions.push(`<a class="button button-secondary" href="${escapeHtml(plugin.demoPath)}">Try interactive demo</a>`);
     if (plugin.productPath) actions.push(`<a class="text-link" href="${escapeHtml(plugin.productPath)}" target="_blank" rel="noopener noreferrer">Product details</a>`);
-    if (plugin.releaseUrl) actions.push(`<a class="text-link" href="${escapeHtml(plugin.releaseUrl)}" target="_blank" rel="noopener noreferrer">Download Free</a>`);
+    if (plugin.downloadUrl) actions.push(`<a class="text-link" href="${escapeHtml(plugin.downloadUrl)}" target="_blank" rel="noopener noreferrer">Download Free ZIP</a>`);
+    if (plugin.releaseUrl) actions.push(`<a class="text-link" href="${escapeHtml(plugin.releaseUrl)}" target="_blank" rel="noopener noreferrer">Release notes</a>`);
     if (plugin.sourceUrl) actions.push(`<a class="text-link" href="${escapeHtml(plugin.sourceUrl)}" target="_blank" rel="noopener noreferrer">View source</a>`);
     const action = actions.length > 0 ? actions.join('') : '<span class="coming-label">Coming soon</span>';
 
@@ -58,6 +59,7 @@ function setupTour(plugin) {
 
   const tabs = [...shell.querySelectorAll('[role="tab"]')];
   const image = shell.querySelector('[data-tour-image]');
+  const imageLink = shell.querySelector('[data-tour-image-link]');
   const label = shell.querySelector('[data-tour-label]');
   const description = shell.querySelector('[data-tour-description]');
   const panel = shell.querySelector('[role="tabpanel"]');
@@ -75,6 +77,8 @@ function setupTour(plugin) {
     window.setTimeout(() => {
       image.src = selected.path;
       image.alt = `${plugin.shortName}: ${selected.description}`;
+      imageLink.href = selected.path;
+      imageLink.setAttribute('aria-label', `Open full-size ${selected.label} screenshot`);
       label.textContent = selected.label;
       description.textContent = selected.description;
       panel.setAttribute('aria-labelledby', activeTab.id);
@@ -235,7 +239,8 @@ function setupInteractiveDemo(plugin) {
   if (packageActions) {
     packageActions.innerHTML = `
       <a class="button button-secondary" href="${escapeHtml(plugin.productPath)}" target="_blank" rel="noopener noreferrer">Product details</a>
-      <a class="button button-primary" href="${escapeHtml(plugin.releaseUrl)}" target="_blank" rel="noopener noreferrer">Download Free</a>
+      <a class="button button-primary" href="${escapeHtml(plugin.downloadUrl)}" target="_blank" rel="noopener noreferrer">Download Free ZIP</a>
+      <a class="button button-secondary" href="${escapeHtml(plugin.releaseUrl)}" target="_blank" rel="noopener noreferrer">Release notes</a>
       <a class="button button-secondary" href="${escapeHtml(plugin.sourceUrl)}" target="_blank" rel="noopener noreferrer">View source on GitHub</a>`;
   }
   document.querySelector('[data-demo-start]')?.addEventListener('click', () => startInteractiveDemo());

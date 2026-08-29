@@ -13,6 +13,7 @@
       "demoPath": "/plugins/advanced-bundles/",
       "productPath": "https://we-wp.com/plugins/aim-advanced-bundles",
       "sourceUrl": "https://github.com/we-wp/advanced-bundles-for-woocommerce",
+      "downloadUrl": "https://github.com/we-wp/advanced-bundles-for-woocommerce/releases/download/v0.1.0/aim-advanced-bundles-0.1.0.zip",
       "releaseUrl": "https://github.com/we-wp/advanced-bundles-for-woocommerce/releases/tag/v0.1.0",
       "runtime": {
         "engine": "wordpress-playground-self-hosted",
@@ -66,6 +67,7 @@
       "demoPath": null,
       "productPath": null,
       "sourceUrl": null,
+      "downloadUrl": null,
       "releaseUrl": null,
       "runtime": null,
       "screenshots": [],

@@ -23,9 +23,10 @@ test('catalogue has one interactive demo and linkless Advanced Invoices', () => 
   assert.equal(bundles.artifact.sha256, lock.plugin.sha256);
   assert.equal(bundles.productPath, 'https://we-wp.com/plugins/aim-advanced-bundles');
   assert.equal(bundles.sourceUrl, 'https://github.com/we-wp/advanced-bundles-for-woocommerce');
+  assert.equal(bundles.downloadUrl, 'https://github.com/we-wp/advanced-bundles-for-woocommerce/releases/download/v0.1.0/aim-advanced-bundles-0.1.0.zip');
   assert.equal(bundles.releaseUrl, 'https://github.com/we-wp/advanced-bundles-for-woocommerce/releases/tag/v0.1.0');
   assert.equal(invoices.status, 'coming-soon');
-  for (const field of ['demoPath', 'productPath', 'sourceUrl', 'releaseUrl']) assert.equal(invoices[field], null);
+  for (const field of ['demoPath', 'productPath', 'sourceUrl', 'downloadUrl', 'releaseUrl']) assert.equal(invoices[field], null);
 });
 
 test('exact Free ZIP is mechanically preserved', async () => {
@@ -182,15 +183,22 @@ test('redistributed PHP, font, and synthetic fixtures have pinned provenance', a
 
 test('interactive shell has reset, failure, and runtime safety verification states', async () => {
   const app = await readFile(join(root, 'src', 'assets', 'app.js'), 'utf8');
+  const page = await readFile(join(root, 'src', 'plugins', 'advanced-bundles', 'index.html'), 'utf8');
+  const installerUrl = 'https://github.com/we-wp/advanced-bundles-for-woocommerce/releases/download/v0.1.0/aim-advanced-bundles-0.1.0.zip';
   for (const required of ['startPlaygroundWeb', 'resetInteractiveDemo', 'we_wp_demo_reset_probe', 'we_wp_demo_network_blocked', 'demo-runtime', 'Runtime safety or fixture verification failed']) {
     assert.match(app, new RegExp(required));
   }
   assert.match(app, /new URL\('\/remote\.html', window\.location\.origin\)/);
   assert.doesNotMatch(app, /playground\.wordpress\.net/);
+  assert.match(app, /plugin\.downloadUrl/);
   assert.match(app, /plugin\.releaseUrl/);
   assert.match(app, /plugin\.sourceUrl/);
   assert.match(app, /plugin\.productPath/);
   assert.match(app, /target="_blank" rel="noopener noreferrer"/);
+  assert.match(app, /data-tour-image-link/);
+  assert.equal(page.split(installerUrl).length - 1, 2);
+  assert.match(page, /data-tour-image-link/);
+  assert.match(page, /Star Advanced Bundles on GitHub/);
 });
 
 test('public shell has no Pro source, external script, or fancy dash characters', async () => {
