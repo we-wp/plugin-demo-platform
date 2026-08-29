@@ -111,6 +111,7 @@ test('release worker refreshes first-party shell without changing pinned runtime
     assert.match(prepared.serviceWorker, new RegExp(route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
   assert.match(prepared.serviceWorker, /weWpShellRequest\(e\.request\)/);
+  assert.match(prepared.serviceWorker, /n\.pathname\.startsWith\("\/client\/index\.js"\)/);
   assert.match(prepared.serviceWorker, /function weWpRuntimeMime\(response, requestUrl\)/);
   assert.match(prepared.serviceWorker, /kc\(e,a\)\.then\(o=>weWpRuntimeMime\(o,e\.request\.url\)\)\.then\(o=>Pr\(o,a\)\)/);
   assert.equal(upstream.split('kc(e,a).then(o=>Pr(o,a))').length - 1, 1);
@@ -191,7 +192,9 @@ test('interactive shell has reset, failure, and runtime safety verification stat
   }
   for (const required of [
     'resolveDemoBlueprint',
-    'Retrying bundled demo data once.'
+    'Retrying bundled demo data once.',
+    "'/assets/blueprint-resolver.js?v=3'",
+    'runId: generation'
   ]) {
     assert.match(app, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
@@ -276,6 +279,34 @@ test('Playground client loader retries one transient module fetch with a unique 
   assert.deepEqual(waits, [750]);
   assert.match(importCalls[0], /\/client\/index\.js\?release=cfd0f4cba218&run=7$/);
   assert.match(importCalls[1], /release=cfd0f4cba218&run=7&retry=1$/);
+});
+
+test('Playground client loader gives a visible retry fresh module URLs after both imports fail', async () => {
+  const importCalls = [];
+  const waits = [];
+  const importModule = async (url) => {
+    importCalls.push(url);
+    if (importCalls.length < 4) throw new TypeError('transient module fetch failure');
+    return { startPlaygroundWeb: true };
+  };
+  const options = {
+    artifactSha256: lock.plugin.sha256,
+    origin: 'https://demo.we-wp.com',
+    importModule,
+    wait: async (milliseconds) => { waits.push(milliseconds); }
+  };
+
+  await assert.rejects(loadPlaygroundClient({ ...options, runId: 7 }), TypeError);
+  const result = await loadPlaygroundClient({ ...options, runId: 8 });
+
+  assert.deepEqual(result, { startPlaygroundWeb: true });
+  assert.equal(importCalls.length, 4);
+  assert.equal(new Set(importCalls).size, 4);
+  assert.deepEqual(waits, [750, 750]);
+  assert.match(importCalls[0], /run=7$/);
+  assert.match(importCalls[1], /run=7&retry=1$/);
+  assert.match(importCalls[2], /run=8$/);
+  assert.match(importCalls[3], /run=8&retry=1$/);
 });
 
 test('demo-only route helper preserves manual carts and verifies the populated destination', async () => {
