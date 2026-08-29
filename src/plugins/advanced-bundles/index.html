@@ -31,7 +31,7 @@
         </div>
       </div>
       <div class="button-row">
-        <a class="button button-primary" href="#tour">View the product flow</a>
+        <button class="button button-primary" data-demo-start data-start-source="hero" type="button" aria-controls="demo-runtime-panel" aria-describedby="runtime-note" aria-expanded="false">Start live WooCommerce demo</button>
         <a class="button button-secondary" href="https://we-wp.com/plugins/advanced-bundles-for-woocommerce" target="_blank" rel="noopener noreferrer">Product details</a>
         <a class="button button-secondary" href="https://github.com/we-wp/advanced-bundles-for-woocommerce/releases/download/v0.1.0/aim-advanced-bundles-0.1.0.zip" target="_blank" rel="noopener noreferrer">Download Free ZIP</a>
       </div>
@@ -44,10 +44,10 @@
             <h2 id="tour-title">See Advanced Bundles in WooCommerce.</h2>
             <p>Switch between real screenshots from the tested Free plugin showcase.</p>
           </div>
-          <button class="button button-primary" id="start-demo" data-demo-start type="button" aria-describedby="runtime-note">Start interactive demo</button>
+          <button class="button button-primary" id="start-demo" data-demo-start data-start-source="tour" type="button" aria-controls="demo-runtime-panel" aria-describedby="runtime-note" aria-expanded="false">Start live WooCommerce demo</button>
         </div>
 
-        <div class="demo-shell" data-demo-shell>
+        <div class="demo-shell" data-demo-shell data-runtime-state="tour">
           <div class="demo-toolbar">
             <div class="demo-brand"><span class="demo-brand-mark" aria-hidden="true"></span><strong>Advanced Bundles</strong><small>Temporary store</small></div>
             <div class="demo-runtime-state"><span aria-hidden="true"></span><span data-toolbar-runtime-state>Screenshot tour</span></div>
@@ -70,7 +70,7 @@
               <figcaption><strong data-tour-label>Product page</strong><span data-tour-description>See bundle products, thumbnails, quantities, links, and total price.</span></figcaption>
             </figure>
           </div>
-          <div class="runtime-workspace" data-runtime-panel hidden>
+          <div class="runtime-workspace" id="demo-runtime-panel" data-runtime-panel role="region" aria-label="Live WooCommerce demo" aria-busy="false" tabindex="-1" hidden>
             <div class="runtime-controls" data-runtime-controls hidden aria-label="Demo navigation">
               <button type="button" data-demo-route="/product/workshop-starter-bundle/" aria-pressed="true">Product page</button>
               <button type="button" data-demo-route="editor" aria-pressed="false">Bundle editor</button>
@@ -83,6 +83,7 @@
               <p>
                 <strong data-runtime-route-title>Try the full order flow.</strong>
                 <span data-runtime-route-message>Cart and Checkout load one example bundle only when your demo cart is empty.</span>
+                <a class="runtime-star-prompt" data-runtime-star-prompt href="https://github.com/we-wp/advanced-bundles-for-woocommerce" target="_blank" rel="noopener noreferrer" hidden>Useful for your store? Star Advanced Bundles on GitHub.</a>
               </p>
             </div>
             <div class="runtime-stage">
@@ -128,7 +129,6 @@
             <a class="button button-secondary" href="https://github.com/we-wp/advanced-bundles-for-woocommerce/releases/tag/v0.1.0" target="_blank" rel="noopener noreferrer">Release notes</a>
             <a class="button button-secondary" href="https://github.com/we-wp/advanced-bundles-for-woocommerce" target="_blank" rel="noopener noreferrer">View source on GitHub</a>
           </div>
-          <p class="github-support">Useful? <a href="https://github.com/we-wp/advanced-bundles-for-woocommerce" target="_blank" rel="noopener noreferrer">Star Advanced Bundles on GitHub</a> to save it and help other WooCommerce users find it.</p>
         </div>
         <dl>
           <div><dt>Version</dt><dd>0.1.0</dd></div>

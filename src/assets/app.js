@@ -6,7 +6,8 @@ const demoState = {
   client: null,
   generation: 0,
   plugin: null,
-  proof: null
+  proof: null,
+  startPromise: null
 };
 
 const escapeHtml = (value) => String(value)
@@ -112,7 +113,7 @@ function setupTour(plugin) {
 
 function setRuntimeState(state, message) {
   const shell = document.querySelector('[data-demo-shell]');
-  const start = document.querySelector('[data-demo-start]');
+  const starts = document.querySelectorAll('[data-demo-start]');
   const tour = document.querySelector('[data-tour-workspace]');
   const runtime = document.querySelector('[data-runtime-panel]');
   const loading = document.querySelector('[data-runtime-loading]');
@@ -123,15 +124,27 @@ function setRuntimeState(state, message) {
   const toolbarState = document.querySelector('[data-toolbar-runtime-state]');
 
   shell.dataset.runtimeState = state;
-  start.disabled = state === 'loading' || state === 'ready';
-  start.textContent = state === 'loading' ? 'Starting temporary store' : state === 'ready' ? 'Demo running' : 'Start interactive demo';
+  const startLabel = state === 'loading'
+    ? 'Starting live WooCommerce demo'
+    : state === 'ready'
+      ? 'Live WooCommerce demo running'
+      : state === 'error'
+        ? 'Try live WooCommerce demo again'
+        : 'Start live WooCommerce demo';
+  starts.forEach((start) => {
+    start.disabled = state === 'loading' || state === 'ready';
+    start.textContent = startLabel;
+    start.setAttribute('aria-expanded', String(state !== 'tour'));
+  });
   tour.hidden = state !== 'tour';
   runtime.hidden = state === 'tour';
+  runtime.setAttribute('aria-busy', String(state === 'loading'));
   loading.hidden = state !== 'loading';
   error.hidden = state !== 'error';
   controls.hidden = state !== 'ready';
   routeGuide.hidden = state !== 'ready';
   frameHost.hidden = state !== 'ready';
+  if (state !== 'ready') document.querySelector('[data-runtime-star-prompt]').hidden = true;
   document.querySelectorAll('[data-runtime-status]').forEach((status) => { status.textContent = message; });
   toolbarState.textContent = state === 'ready' ? 'Isolated store ready' : state === 'loading' ? 'Preparing temporary store' : state === 'error' ? 'Demo could not start' : 'Screenshot tour';
 }
@@ -139,10 +152,21 @@ function setRuntimeState(state, message) {
 function setRouteGuide(state, title, message) {
   const guide = document.querySelector('[data-runtime-route-guide]');
   if (!guide) return;
+  const starPrompt = guide.querySelector('[data-runtime-star-prompt]');
+  const showStarPrompt = ['loaded', 'preserved'].includes(state);
   guide.dataset.state = state;
   if (!['loaded', 'preserved'].includes(state)) delete guide.dataset.cartAction;
   guide.querySelector('[data-runtime-route-title]').textContent = title;
   guide.querySelector('[data-runtime-route-message]').textContent = message;
+  starPrompt.hidden = !showStarPrompt;
+}
+
+function focusRuntimeProgress() {
+  const runtime = document.querySelector('[data-runtime-panel]');
+  if (!runtime || runtime.hidden) return;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  runtime.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+  window.requestAnimationFrame(() => runtime.focus({ preventScroll: true }));
 }
 
 function setRouteControlsDisabled(disabled) {
@@ -308,11 +332,12 @@ echo wp_json_encode( $result );`
   return result;
 }
 
-async function startInteractiveDemo({ expectCleanReset = false } = {}) {
+async function performInteractiveDemoStart({ expectCleanReset = false, focusProgress = false } = {}) {
   const generation = ++demoState.generation;
   demoState.client = null;
   demoState.proof = null;
   setRuntimeState('loading', expectCleanReset ? 'Resetting to a fresh temporary store.' : 'Loading WordPress, WooCommerce, and the verified Free package.');
+  if (focusProgress) focusRuntimeProgress();
 
   try {
     if (loopbackHosts.has(window.location.hostname) && new URLSearchParams(window.location.search).get('demo-runtime') === 'fail') {
@@ -359,13 +384,27 @@ async function startInteractiveDemo({ expectCleanReset = false } = {}) {
   }
 }
 
+function startInteractiveDemo(options = {}) {
+  if (demoState.startPromise) {
+    if (options.focusProgress) focusRuntimeProgress();
+    return demoState.startPromise;
+  }
+
+  const pending = performInteractiveDemoStart(options);
+  const tracked = pending.finally(() => {
+    if (demoState.startPromise === tracked) demoState.startPromise = null;
+  });
+  demoState.startPromise = tracked;
+  return tracked;
+}
+
 async function resetInteractiveDemo() {
   if (demoState.client) {
     await demoState.client.run({
       code: "<?php require_once '/wordpress/wp-load.php'; update_option( 'we_wp_demo_reset_probe', 'present' );"
     });
   }
-  await startInteractiveDemo({ expectCleanReset: true });
+  await startInteractiveDemo({ expectCleanReset: true, focusProgress: true });
 }
 
 function setupInteractiveDemo(plugin) {
@@ -378,8 +417,10 @@ function setupInteractiveDemo(plugin) {
       <a class="button button-secondary" href="${escapeHtml(plugin.releaseUrl)}" target="_blank" rel="noopener noreferrer">Release notes</a>
       <a class="button button-secondary" href="${escapeHtml(plugin.sourceUrl)}" target="_blank" rel="noopener noreferrer">View source on GitHub</a>`;
   }
-  document.querySelector('[data-demo-start]')?.addEventListener('click', () => startInteractiveDemo());
-  document.querySelector('[data-runtime-retry]')?.addEventListener('click', () => startInteractiveDemo());
+  document.querySelectorAll('[data-demo-start]').forEach((start) => {
+    start.addEventListener('click', () => startInteractiveDemo({ focusProgress: true }));
+  });
+  document.querySelector('[data-runtime-retry]')?.addEventListener('click', () => startInteractiveDemo({ focusProgress: true }));
   document.querySelector('[data-runtime-reset]')?.addEventListener('click', () => resetInteractiveDemo());
   document.querySelectorAll('[data-demo-route]').forEach((button) => {
     button.addEventListener('click', async () => {

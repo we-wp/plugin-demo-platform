@@ -217,6 +217,7 @@ h3 {
   border-radius: 10px;
   font-weight: 680;
   text-decoration: none;
+  cursor: pointer;
   transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 
@@ -847,19 +848,6 @@ h3 {
   transform: scale(0.992);
 }
 
-.github-support {
-  margin: 1rem 0 0;
-  color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-
-.github-support a {
-  color: var(--ink);
-  font-weight: 700;
-  text-underline-offset: 0.2em;
-}
-
 .tour-stage figcaption {
   display: flex;
   gap: 14px;
@@ -877,6 +865,12 @@ h3 {
 .runtime-workspace {
   min-height: 720px;
   background: #15181d;
+  scroll-margin-top: 24px;
+}
+
+.runtime-workspace:focus-visible {
+  outline-color: var(--mint);
+  outline-offset: -4px;
 }
 
 .runtime-controls {
@@ -943,6 +937,7 @@ h3 {
 
 .runtime-route-guide p {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: baseline;
   margin: 0;
@@ -955,8 +950,19 @@ h3 {
   color: white;
 }
 
-.runtime-route-guide span:last-child {
+.runtime-route-guide [data-runtime-route-message] {
   color: #b8bdc6;
+}
+
+.runtime-star-prompt {
+  margin-left: auto;
+  color: var(--mint);
+  font-weight: 680;
+  text-underline-offset: 0.2em;
+}
+
+.runtime-star-prompt:hover {
+  color: white;
 }
 
 .runtime-route-guide[data-state="loading"] .runtime-route-guide-mark {
@@ -1133,10 +1139,6 @@ h3 {
 
 .package-proof .button:focus-visible {
   outline-color: var(--paper);
-}
-
-.package-proof .github-support a {
-  color: white;
 }
 
 .proof-layout {
@@ -1404,6 +1406,10 @@ h3 {
     align-items: flex-start;
     flex-direction: column;
     gap: 2px;
+  }
+
+  .runtime-star-prompt {
+    margin-left: 0;
   }
 
   .runtime-loading,

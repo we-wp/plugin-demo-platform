@@ -206,6 +206,19 @@ test('interactive shell has reset, failure, and runtime safety verification stat
   assert.match(app, /plugin\.productPath/);
   assert.match(app, /target="_blank" rel="noopener noreferrer"/);
   assert.match(app, /data-tour-image-link/);
+  const startControls = page.match(/<button[^>]*data-demo-start[^>]*>Start live WooCommerce demo<\/button>/g) ?? [];
+  assert.equal(startControls.length, 2);
+  for (const control of startControls) {
+    assert.match(control, /aria-controls="demo-runtime-panel"/);
+    assert.match(control, /aria-describedby="runtime-note"/);
+    assert.match(control, /aria-expanded="false"/);
+  }
+  assert.match(page, /data-start-source="hero"/);
+  assert.match(page, /id="demo-runtime-panel"[^>]*role="region"[^>]*aria-label="Live WooCommerce demo"[^>]*aria-busy="false"[^>]*tabindex="-1"/);
+  assert.match(app, /document\.querySelectorAll\('\[data-demo-start\]'\)/);
+  assert.match(app, /demoState\.startPromise/);
+  assert.match(app, /scrollIntoView\(\{ behavior: reduceMotion \? 'auto' : 'smooth', block: 'start' \}\)/);
+  assert.match(app, /runtime\.focus\(\{ preventScroll: true \}\)/);
   for (const required of [
     'we_wp_demo_example',
     'we_wp_demo_request',
@@ -219,8 +232,14 @@ test('interactive shell has reset, failure, and runtime safety verification stat
     assert.match(app, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
   assert.equal(page.split(installerUrl).length - 1, 2);
+  assert.doesNotMatch(app, /fetch\s*\(\s*plugin\.downloadUrl/);
+  assert.doesNotMatch(app, /fetch\s*\(\s*['"`]https:\/\/github\.com\/we-wp\/advanced-bundles-for-woocommerce\/releases/);
   assert.match(page, /data-tour-image-link/);
-  assert.match(page, /Star Advanced Bundles on GitHub/);
+  const sourceUrl = 'https://github.com/we-wp/advanced-bundles-for-woocommerce';
+  assert.equal(page.split('Useful for your store? Star Advanced Bundles on GitHub.').length - 1, 1);
+  assert.match(page, new RegExp(`data-runtime-star-prompt href="${sourceUrl}" target="_blank" rel="noopener noreferrer" hidden`));
+  assert.match(app, /const showStarPrompt = \['loaded', 'preserved'\]\.includes\(state\);/);
+  assert.match(app, /starPrompt\.hidden = !showStarPrompt;/);
   assert.match(page, /data-runtime-route-guide/);
   assert.match(page, /Cart and Checkout load one example bundle only when your demo cart is empty\./);
 });
