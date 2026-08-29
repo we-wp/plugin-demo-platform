@@ -1047,6 +1047,37 @@ h3 {
   color: white;
 }
 
+.package-proof .button-primary {
+  border-color: var(--paper);
+  background: var(--paper);
+  color: var(--cobalt-strong);
+}
+
+.package-proof .button-primary:hover {
+  border-color: white;
+  background: transparent;
+  color: white;
+}
+
+.package-proof .button-secondary {
+  border-color: rgba(255, 255, 255, 0.72);
+  color: white;
+}
+
+.package-proof .button-secondary:hover {
+  border-color: var(--paper);
+  background: var(--paper);
+  color: var(--cobalt-strong);
+}
+
+.package-proof .button:focus-visible {
+  outline-color: var(--paper);
+}
+
+.package-proof .github-support a {
+  color: white;
+}
+
 .proof-layout {
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(420px, 1.2fr);
