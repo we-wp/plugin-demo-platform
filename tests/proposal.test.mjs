@@ -21,7 +21,7 @@ test('catalogue has one interactive demo and linkless Advanced Invoices', () => 
   const invoices = registry.plugins.find((plugin) => plugin.slug === 'advanced-invoices');
   assert.equal(bundles.runtime.ready, true);
   assert.equal(bundles.artifact.sha256, lock.plugin.sha256);
-  assert.equal(bundles.productPath, 'https://we-wp.com/plugins/aim-advanced-bundles');
+  assert.equal(bundles.productPath, 'https://we-wp.com/plugins/advanced-bundles-for-woocommerce');
   assert.equal(bundles.sourceUrl, 'https://github.com/we-wp/advanced-bundles-for-woocommerce');
   assert.equal(bundles.downloadUrl, 'https://github.com/we-wp/advanced-bundles-for-woocommerce/releases/download/v0.1.0/aim-advanced-bundles-0.1.0.zip');
   assert.equal(bundles.releaseUrl, 'https://github.com/we-wp/advanced-bundles-for-woocommerce/releases/tag/v0.1.0');
