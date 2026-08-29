@@ -6,7 +6,7 @@ const networkFirstNeedle = 'if(n.pathname==="/remote.html"||n.pathname==="/api.h
 const runtimeResponseNeedle = 'kc(e,a).then(o=>Pr(o,a))';
 const runtimeResponseReplacement = 'kc(e,a).then(o=>weWpRuntimeMime(o,e.request.url)).then(o=>Pr(o,a))';
 const policyVersion = 'we-wp-shell-network-first-v4';
-const shellPolicy = 'function weWpShellRequest(e){const n=new URL(e.url);return n.pathname==="/index.html"||n.pathname==="/favicon.ico"||n.pathname==="/build-manifest.json"||n.pathname==="/assets/app.js"||n.pathname==="/assets/app.css"||n.pathname.startsWith("/assets/fonts/")||n.pathname.startsWith("/assets/screenshots/")||n.pathname.startsWith("/data/")||n.pathname.startsWith("/demo-assets/")||n.pathname.startsWith("/health/")||n.pathname.startsWith("/plugins/")}';
+const shellPolicy = 'function weWpShellRequest(e){const n=new URL(e.url);return n.pathname==="/index.html"||n.pathname==="/favicon.ico"||n.pathname==="/build-manifest.json"||n.pathname==="/assets/app.js"||n.pathname==="/assets/blueprint-resolver.js"||n.pathname==="/assets/app.css"||n.pathname.startsWith("/assets/fonts/")||n.pathname.startsWith("/assets/screenshots/")||n.pathname.startsWith("/data/")||n.pathname.startsWith("/demo-assets/")||n.pathname.startsWith("/health/")||n.pathname.startsWith("/plugins/")}';
 
 export function weWpRuntimeMime(response, requestUrl) {
   const currentType = response.headers.get('content-type');

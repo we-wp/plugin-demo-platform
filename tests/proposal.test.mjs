@@ -5,6 +5,7 @@ import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+import { resolveDemoBlueprint } from '../src/assets/blueprint-resolver.js';
 import { prepareServiceWorker, releaseFingerprint, weWpRuntimeMime } from '../scripts/service-worker-release.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
@@ -106,7 +107,7 @@ test('release worker refreshes first-party shell without changing pinned runtime
   assert.match(prepared.runtimeWorker, new RegExp(`-we-wp-${first}`));
   assert.match(prepared.serviceWorker, /Gr="playground-cache"/);
   assert.match(prepared.runtimeWorker, /CACHE_NAME_PREFIX="playground-cache"/);
-  for (const route of ['/plugins/', '/data/', '/demo-assets/', '/health/', '/assets/app.js', '/assets/app.css']) {
+  for (const route of ['/plugins/', '/data/', '/demo-assets/', '/health/', '/assets/app.js', '/assets/blueprint-resolver.js', '/assets/app.css']) {
     assert.match(prepared.serviceWorker, new RegExp(route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
   assert.match(prepared.serviceWorker, /weWpShellRequest\(e\.request\)/);
@@ -188,6 +189,12 @@ test('interactive shell has reset, failure, and runtime safety verification stat
   for (const required of ['startPlaygroundWeb', 'resetInteractiveDemo', 'we_wp_demo_reset_probe', 'we_wp_demo_network_blocked', 'demo-runtime', 'Runtime safety or fixture verification failed']) {
     assert.match(app, new RegExp(required));
   }
+  for (const required of [
+    'resolveDemoBlueprint',
+    'Retrying bundled demo data once.'
+  ]) {
+    assert.match(app, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
   assert.match(app, /new URL\('\/remote\.html', window\.location\.origin\)/);
   assert.doesNotMatch(app, /playground\.wordpress\.net/);
   assert.match(app, /plugin\.downloadUrl/);
@@ -213,6 +220,37 @@ test('interactive shell has reset, failure, and runtime safety verification stat
   assert.match(page, /Star Advanced Bundles on GitHub/);
   assert.match(page, /data-runtime-route-guide/);
   assert.match(page, /Cart and Checkout load one example bundle only when your demo cart is empty\./);
+});
+
+test('Blueprint resolver retries one transient bundled-file fetch with no-store credentials omitted', async () => {
+  const fetchCalls = [];
+  const waits = [];
+  let retries = 0;
+  const result = await resolveDemoBlueprint({
+    resolveRemoteBlueprint: async (url, options) => {
+      const response = await options.fetch(url, { credentials: 'include' });
+      return response.text();
+    },
+    path: '/demo-assets/advanced-bundles-demo.zip',
+    artifactSha256: lock.plugin.sha256,
+    origin: 'https://demo.we-wp.com',
+    fetchImpl: async (url, options) => {
+      fetchCalls.push({ url, options });
+      if (fetchCalls.length === 1) throw new TypeError('transient fetch failure');
+      return new Response('resolved');
+    },
+    onRetry: () => { retries += 1; },
+    wait: async (milliseconds) => { waits.push(milliseconds); }
+  });
+
+  assert.equal(result, 'resolved');
+  assert.equal(fetchCalls.length, 2);
+  assert.equal(retries, 1);
+  assert.deepEqual(waits, [750]);
+  assert.equal(fetchCalls[0].options.cache, 'no-store');
+  assert.equal(fetchCalls[0].options.credentials, 'omit');
+  assert.match(fetchCalls[0].url, /release=cfd0f4cba218/);
+  assert.match(fetchCalls[1].url, /retry=1/);
 });
 
 test('demo-only route helper preserves manual carts and verifies the populated destination', async () => {

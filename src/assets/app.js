@@ -1,3 +1,5 @@
+import { resolveDemoBlueprint } from '/assets/blueprint-resolver.js?v=1';
+
 const registryUrl = '/data/plugins.json';
 const loopbackHosts = new Set(['127.0.0.1', 'localhost', '::1']);
 const demoState = {
@@ -318,7 +320,14 @@ async function startInteractiveDemo({ expectCleanReset = false } = {}) {
     }
     const { resolveRemoteBlueprint, startPlaygroundWeb } = await import('/client/index.js');
     const iframe = createRuntimeFrame();
-    const resolvedBundle = await resolveRemoteBlueprint(demoState.plugin.runtime.blueprintBundlePath);
+    const resolvedBundle = await resolveDemoBlueprint({
+      resolveRemoteBlueprint,
+      path: demoState.plugin.runtime.blueprintBundlePath,
+      artifactSha256: demoState.plugin.artifact.sha256,
+      onRetry: () => {
+        document.querySelector('[data-runtime-status]').textContent = 'Retrying bundled demo data once.';
+      }
+    });
     const client = await withTimeout(startPlaygroundWeb({
       iframe,
       remoteUrl: new URL('/remote.html', window.location.origin).href,
