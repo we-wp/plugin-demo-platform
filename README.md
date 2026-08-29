@@ -11,6 +11,8 @@ Self-hosted browser demo platform for we-wp WooCommerce plugins.
 - Pinned self-hosted WordPress Playground client, remote, service worker, WordPress 6.9, and PHP 8.3 runtimes.
 - Exact pinned Free plugin ZIP, WooCommerce package, synthetic fixtures, and demo guard.
 - Fresh-store reset, deterministic failure state, and in-runtime safety verification before the UI reports ready.
+- Empty-cart-only example seeding for Cart and Checkout, preservation of manual carts, and verified bundle/component totals before success is shown.
+- Bounded automatic retries for transient client-module and bundled-demo fetch failures, with fresh module URLs for each visible retry.
 - Deterministic build, package, runtime-inventory, and local preview checks.
 
 The exact upstream artifact, archive hash, full inventory hash, reduced selection hash, and browser-verification state are recorded in `blueprints/runtime.lock.json`. The retained runtime is 120,629,711 bytes across 2,063 files; the 709,583,353-byte source archive is not duplicated in the repository. See `docs/operations/runtime-import.md` for provenance and reproduction.
@@ -36,6 +38,8 @@ Open `http://localhost:8783/plugins/advanced-bundles/`, choose **Start interacti
 - Local Chromium boot, add-to-cart, editor, cart, checkout, reset, outbound block, failure state, and 390/1440 responsive proof: yes.
 - Public source repository: `https://github.com/we-wp/plugin-demo-platform`.
 - Forge deployment and `demo.we-wp.com` DNS/TLS: live.
-- Production verified through behavior commit `248df9c90b38ed4a70587d97e3e543195d7b3c2d`: direct installer links, separate release notes, full-size screenshots, and the GitHub star prompt passed anonymous checks at 1440 px and 390 px without cookies, overflow, or console errors.
+- Production behavior: commit `7e6ae9e0ac42a877fee8483ce345fa5a1665485e` deployed by Forge command `12464453`; the command finished after checking the exact detached commit. Current source `main` at `3f4dce312306af973f144e7fc75c7db166ec4438` adds test coverage only.
+- Current local source check: 18/18 Node tests plus deterministic verification of 2,079 built files, the pinned runtime, Blueprint inventory, WooCommerce bytes, and the unchanged 55,745-byte Free installer.
+- Production HTTP proof: resolver `v3` is live; sampled `release+run` and `release+run+retry` client entry URLs return identical JavaScript bytes with `Cache-Control: no-store`.
 
 See `docs/architecture.md` and `docs/operations/forge-deploy.md` for the gated implementation path.
