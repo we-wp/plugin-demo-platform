@@ -1,4 +1,33 @@
 export const blueprintResolveAttempts = 2;
+export const playgroundClientLoadAttempts = 2;
+
+export async function loadPlaygroundClient({
+  importModule = (url) => import(url),
+  path = '/client/index.js',
+  artifactSha256,
+  origin = window.location.origin,
+  onRetry = () => {},
+  wait = (milliseconds) => new Promise((resolve) => window.setTimeout(resolve, milliseconds))
+}) {
+  let lastError;
+
+  for (let attempt = 0; attempt < playgroundClientLoadAttempts; attempt += 1) {
+    const url = new URL(path, origin);
+    url.searchParams.set('release', artifactSha256.slice(0, 12));
+    if (attempt > 0) url.searchParams.set('retry', String(attempt));
+
+    try {
+      return await importModule(url.href);
+    } catch (error) {
+      lastError = error;
+      if (attempt + 1 >= playgroundClientLoadAttempts) break;
+      onRetry();
+      await wait(750);
+    }
+  }
+
+  throw lastError;
+}
 
 export async function resolveDemoBlueprint({
   resolveRemoteBlueprint,

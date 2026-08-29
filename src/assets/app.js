@@ -1,4 +1,4 @@
-import { resolveDemoBlueprint } from '/assets/blueprint-resolver.js?v=1';
+import { loadPlaygroundClient, resolveDemoBlueprint } from '/assets/blueprint-resolver.js?v=2';
 
 const registryUrl = '/data/plugins.json';
 const loopbackHosts = new Set(['127.0.0.1', 'localhost', '::1']);
@@ -318,7 +318,12 @@ async function startInteractiveDemo({ expectCleanReset = false } = {}) {
     if (loopbackHosts.has(window.location.hostname) && new URLSearchParams(window.location.search).get('demo-runtime') === 'fail') {
       throw new Error('Local failure test requested.');
     }
-    const { resolveRemoteBlueprint, startPlaygroundWeb } = await import('/client/index.js');
+    const { resolveRemoteBlueprint, startPlaygroundWeb } = await loadPlaygroundClient({
+      artifactSha256: demoState.plugin.artifact.sha256,
+      onRetry: () => {
+        document.querySelector('[data-runtime-status]').textContent = 'Retrying the demo runtime once.';
+      }
+    });
     const iframe = createRuntimeFrame();
     const resolvedBundle = await resolveDemoBlueprint({
       resolveRemoteBlueprint,

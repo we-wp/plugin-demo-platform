@@ -5,7 +5,7 @@ import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { resolveDemoBlueprint } from '../src/assets/blueprint-resolver.js';
+import { loadPlaygroundClient, resolveDemoBlueprint } from '../src/assets/blueprint-resolver.js';
 import { prepareServiceWorker, releaseFingerprint, weWpRuntimeMime } from '../scripts/service-worker-release.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
@@ -251,6 +251,30 @@ test('Blueprint resolver retries one transient bundled-file fetch with no-store 
   assert.equal(fetchCalls[0].options.credentials, 'omit');
   assert.match(fetchCalls[0].url, /release=cfd0f4cba218/);
   assert.match(fetchCalls[1].url, /retry=1/);
+});
+
+test('Playground client loader retries one transient module fetch with a unique release URL', async () => {
+  const importCalls = [];
+  const waits = [];
+  let retries = 0;
+  const result = await loadPlaygroundClient({
+    artifactSha256: lock.plugin.sha256,
+    origin: 'https://demo.we-wp.com',
+    importModule: async (url) => {
+      importCalls.push(url);
+      if (importCalls.length === 1) throw new TypeError('transient module fetch failure');
+      return { startPlaygroundWeb: true };
+    },
+    onRetry: () => { retries += 1; },
+    wait: async (milliseconds) => { waits.push(milliseconds); }
+  });
+
+  assert.deepEqual(result, { startPlaygroundWeb: true });
+  assert.equal(importCalls.length, 2);
+  assert.equal(retries, 1);
+  assert.deepEqual(waits, [750]);
+  assert.match(importCalls[0], /\/client\/index\.js\?release=cfd0f4cba218$/);
+  assert.match(importCalls[1], /release=cfd0f4cba218&retry=1$/);
 });
 
 test('demo-only route helper preserves manual carts and verifies the populated destination', async () => {
